@@ -20,8 +20,15 @@ export default function Marquee({ items }: { items: string[] }) {
         ))}
       </ul>
 
+      {/* The wrapper's mask fades its own first ~6% to transparent. At rest
+          (translateX(0), before the loop has moved anything) that fade
+          zone sits directly on top of whatever is the first item, clipping
+          it. A blank leading spacer — the same width in both halves, so
+          the two "sides" of the -50% loop stay equal-width and the wrap
+          stays seamless — pushes real text past the fade zone instead. */}
       <div className="marquee-wrapper relative overflow-hidden motion-reduce:hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
         <ul className="marquee-track flex w-max items-center gap-x-10 sm:gap-x-12">
+          <li aria-hidden="true" className="w-10 shrink-0 sm:w-16" />
           {items.map((item) => (
             <li
               key={item}
@@ -30,6 +37,7 @@ export default function Marquee({ items }: { items: string[] }) {
               {item}
             </li>
           ))}
+          <li aria-hidden="true" className="w-10 shrink-0 sm:w-16" />
           {items.map((item) => (
             <li
               key={`dup-${item}`}
