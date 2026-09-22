@@ -1,5 +1,40 @@
 # Propsoch Landing Page Redesign
 
+## Getting started
+
+```bash
+npm install
+npm run dev      # http://localhost:3000
+```
+
+For a production-equivalent build (this is what every Lighthouse number
+in this README was measured against — `next dev` is not representative):
+
+```bash
+npm run build
+npm run start     # http://localhost:3000
+```
+
+Requires Node 18.18+ and no environment variables — there is no backend,
+no API keys and no third-party service to configure. `npm run lint` runs
+ESLint; TypeScript is checked automatically as part of `npm run build`.
+
+**Deployment status:** not yet deployed. See §21.10 for what's outstanding
+and why.
+
+**Document map**, in the order they were produced:
+[`docs/REDESIGN_AUDIT.md`](docs/REDESIGN_AUDIT.md) (repo/architecture
+audit), [`docs/PHASE3_VISUAL_REDESIGN_PLAN.md`](docs/PHASE3_VISUAL_REDESIGN_PLAN.md)
+(the approved visual plan), [`docs/INTERACTION_AUDIT.md`](docs/INTERACTION_AUDIT.md)
+and [`docs/DESIGN_DIRECTION.md`](docs/DESIGN_DIRECTION.md) (earlier
+reference research). §21 below is the current, authoritative account of
+what's actually in the repository today; §1–20 are kept as the
+project's real working history rather than edited to look
+retroactively tidy — where something they describe was later
+superseded, that's called out inline with a pointer forward to §21.
+
+---
+
 ## Assessment Overview
 
 This project is a redesign of the Propsoch landing page, based on the
@@ -1024,8 +1059,10 @@ against the Section 3 baseline.
 
 - **Hero (redesigned)** — headline, value proposition and a single primary
   CTA answer "what is Propsoch / why should I care / what do I do next" in
-  the first viewport on both mobile and desktop. The supporting visual is an
-  original illustration (see 20.2), not the original site's photography.
+  the first viewport on both mobile and desktop. The supporting visual was
+  an original illustration at this point in the project (see 20.2) — it
+  was later replaced by a different, still zero-image device; see §21 for
+  the current state, which supersedes this description.
 - **Brochure vs Reality** — an accessible drag comparison (desktop) / tap
   toggle (mobile) between overlaid "Brochure" and "Reality" panels, built
   with `clip-path` + vanilla pointer events (no slider library). See
@@ -1040,16 +1077,20 @@ against the Section 3 baseline.
 
 ## 20.2 Image strategy
 
-No stock photography and no scraped assets from propsoch.com were used.
-The hero visual and the Brochure vs Reality panels are original CSS/SVG
-compositions (a "glossy brochure" card vs. a "verified reality check" card
-with a magnifying-glass motif) that directly illustrate the core value
-proposition — investigate before you trust the sales pitch — rather than
-decorative photography. This was a deliberate trade-off: it keeps every
-visual on-brand and license-clean, and it means the largest visual on the
-page costs zero image bytes. The only generated raster asset is a 505-byte
-on-brand PNG app icon (`app/icon.tsx`, built with `next/og`), replacing the
-default Next.js favicon.
+No stock photography and no scraped assets from propsoch.com were used, at
+this point in the project or later. At this stage the hero visual and the
+Brochure vs Reality panels were original CSS/SVG compositions (a "glossy
+brochure" card vs. a "verified reality check" card with a magnifying-glass
+motif) illustrating the core value proposition — investigate before you
+trust the sales pitch — rather than decorative photography. The hero
+mockup card was later replaced by a different device (§21); the zero-image
+principle itself did not change. This was a deliberate trade-off throughout:
+it keeps every visual on-brand and license-clean, and it means the largest
+visual on the page costs zero image bytes. The only generated raster asset
+is a 505-byte on-brand PNG app icon (`app/icon.tsx`, built with `next/og`),
+replacing the default Next.js favicon. No raster or vector image files
+exist anywhere in the repository at any point in this project — verified
+by search, not assumed, during the §21 final audit.
 
 ## 20.3 Accessibility
 
@@ -1186,3 +1227,313 @@ rights to real video).
 **Net measured effect:** +19KB transfer (199KB → 218KB), +1 request
 (11 → 12), zero change to LCP, TBT or CLS, zero net change to any
 Lighthouse category score. Full before/after detail is in §20.4's table.
+
+---
+
+# 21. Phase 3 — Editorial Redesign & Final Audit
+
+Everything above this point (§1–20) is kept as the project's real
+working history, not rewritten after the fact. This section documents
+a second, later design pass — requested separately, after §20 had
+already shipped and passed its own validation — plus the final
+whole-page audit performed at the end of it. **This section reflects
+the current, actual state of the repository.**
+
+## 21.1 Why a second pass
+
+§20's build was already measuring 98–100 across every Lighthouse
+category with 0 axe violations. What it hadn't solved was a design
+judgment, not an engineering one: reviewed as a whole page, it read as
+a technically excellent but conventional landing page — `rounded-2xl`
+mockup cards, centered content blocks, a four-card stat grid — the
+kind of page that's correctly built but not distinctive. The brief for
+this phase asked specifically for a page that "would make a reviewer
+think this engineer understands product design" and reads as
+composed rather than assembled section-by-section. That's a real,
+separate bar from "fast and accessible," and closing that gap without
+regressing the engineering quality already in place is what this phase
+is about.
+
+## 21.2 Process
+
+1. **Repository audit** ([`docs/REDESIGN_AUDIT.md`](docs/REDESIGN_AUDIT.md))
+   — inspected the actual codebase (not assumed) for architecture,
+   duplication, CSS token gaps, accessibility posture and, most
+   importantly, *why* the page read as generic: rounded-card/shadow
+   language, uniform centered section openers, dashboard-style metric
+   tiles.
+2. **Design architecture proposal** (same document) — a 3-tier
+   `ui/patterns/sections` structure, each candidate component justified
+   against a genuine duplication or reuse case, not created on spec.
+3. **Visual redesign plan**
+   ([`docs/PHASE3_VISUAL_REDESIGN_PLAN.md`](docs/PHASE3_VISUAL_REDESIGN_PLAN.md))
+   — reference research against two external sites (Les Grandes-Serres
+   de Pantin, Coperni) for composition *principles* only — oversized
+   authored typography, asymmetric layout, a sparing full-bleed
+   "moment," restrained numbered wayfinding — never their visual
+   identity. Concrete per-section composition decisions, three
+   deliberately distinct "signature moments," and an explicit
+   brand-fidelity guardrail against the page drifting toward a generic
+   architecture-studio aesthetic.
+4. **Phased implementation** — one section at a time (Hero → Trust →
+   Comparison → Journey → Testimonial + Final CTA), each phase gated on
+   a full production Lighthouse run, an `axe-core` scan, a 7-breakpoint
+   overflow check and (where relevant) a full interaction re-test
+   *before* moving to the next section. Small, logical commits — see
+   `git log` for the individual phase commits.
+5. **Final whole-page audit** (this section) — the page reviewed as one
+   composition rather than six independently-approved sections, plus a
+   compliance check against the original assignment requirements from
+   §0/§1 of this README.
+
+## 21.3 What changed, section by section
+
+- **Hero.** The `rounded-2xl` product-mockup card is gone. The headline
+  is now the primary device: an asymmetric 12-column grid, authored
+  3-line breaks that only activate at `lg:` (so the oversized type scale
+  never has to survive a forced break on a 320px screen — below `lg` the
+  same text just flows and wraps as it always did), and a supporting
+  "measurement line" motif — a rule with a few tick marks labeled from
+  Propsoch's own verification points, not an abstract graphic.
+- **Trust.** Split into two asymmetric bands (label+marquee, then a flat
+  stat row with rule dividers) instead of one centered caption + a
+  4-card stat grid. The marquee mechanism itself (CSS-only `translateX`
+  loop, duplicate-and-`aria-hidden`, reduced-motion fallback,
+  pause-on-hover) is unchanged, just extracted into
+  `components/patterns/Marquee.tsx`.
+- **Comparison.** The signature moment: an oversized "01" numeral, an
+  asymmetric two-column intro, and the comparison widget itself broken
+  out to true full-bleed (edge-to-edge at every breakpoint, not just
+  desktop) with all card chrome (`rounded-2xl`/border/shadow) removed.
+  The drag/keyboard/pointer interaction inside it is **completely
+  unchanged** — same `role="slider"` semantics, same imperative-paint
+  architecture — only its visual framing changed.
+- **Journey.** Five stages at uneven widths (15/25/20/25/15%) instead of
+  five equal cards, threaded along one continuous baseline rule with
+  inline "01 — Today" labels replacing the old circle badges. Ships
+  fully static — no scroll-driven state — because a static composition
+  is genuinely cheaper and nothing about the redesign required
+  otherwise; see §21.4.
+- **Testimonial.** A calm, asymmetric offset pull-quote instead of a
+  centered block — the page's one deliberate "rest beat," unchanged in
+  content and given no new motion.
+- **Final CTA.** An asymmetric ~60/35 split on the existing dark
+  background that deliberately echoes the Hero's own asymmetric grid —
+  an intentional compositional bookend for the page, not a coincidence.
+
+## 21.4 What was deliberately not changed
+
+- **The Brochure vs Reality interaction mechanics** — pointer capture,
+  clamp math, keyboard semantics, the imperative-DOM-write architecture
+  that avoids React re-renders during drag. Verified with the same
+  automated drag/keyboard/mobile-toggle/scroll test after every visual
+  change to the section that contains it, not assumed preserved.
+- **`lib/content.ts`'s factual copy.** No invented claims, statistics,
+  customer names or testimonials at any point in this phase, matching
+  the rule that has held since §20.
+- **The dependency graph.** `package.json` has never changed beyond the
+  original `create-next-app` scaffold across this entire project —
+  `next`, `react`, `react-dom` and standard dev tooling only.
+- **The client/server boundary.** Still exactly two client components in
+  the whole application: `NavBar` (mobile menu state) and
+  `BrochureRealityCompare` (the drag interaction). `Marquee` is a plain
+  server component — its animation is pure CSS, needs no JavaScript at
+  all.
+- **The information architecture** — Navigation → Hero → Trust →
+  Comparison → Journey → Testimonial → Final CTA → Footer, unchanged
+  from §7's original section selection.
+- **Two motion ideas that were designed but deliberately never built:**
+  a scroll-triggered entrance animation for the Comparison panel, and a
+  scroll-driven active/muted state for Journey's stages. Both were
+  specified in the visual plan, then dropped before implementation
+  because neither passed a simple test applied consistently through
+  this phase — *what does this motion communicate that the static
+  version doesn't* — and the honest answer for both was "nothing, it
+  would just look more sophisticated." Journey and Comparison ship fully
+  static as a result.
+
+## 21.5 Design system notes
+
+Token additions this phase (`--text-display-lg`, `--text-eyebrow`,
+`--text-metadata`) and a documented radius policy (`rounded-full`
+reserved for pills/buttons/avatars; card-style rounded corners retired
+in favor of hairline rules) both live in `app/globals.css`. Component
+extraction followed an "opportunistic, not speculative" rule the whole
+way through: `components/patterns/Marquee.tsx` was built the moment
+Trust actually needed it lifted out of `TrustBar.tsx`; a `Metric`
+component, a `TimelineStep` component and a shared `useInView` hook
+were all *proposed* in the plan as conditional candidates and never
+built, because nothing in the final implementation ever needed them —
+a real example of the project's own anti-speculative-abstraction
+principle holding under actual conditions, not just stated as policy.
+
+## 21.6 Accessibility work in this phase
+
+Verified with `axe-core` after every single phase (0 violations at
+every checkpoint that follows a fix), plus manual keyboard and
+reduced-motion checks re-run whenever a change touched an interactive
+or animated element. Three real, evidence-based issues were caught and
+fixed along the way, not assumed away:
+
+1. **Comparison's numeral contrast.** The first-draft oversized "01"
+   used a 15%-opacity brand tint intended to read as "receded." `axe`
+   correctly flagged it: `aria-hidden` exempts an element from screen
+   readers, but WCAG's visual contrast requirement still applies to
+   anything actually rendered as text, and 15% opacity measured
+   ~1.2:1 against the page background — nowhere near the 3:1 large-text
+   minimum. Fixed by computing the actual luminance curve with a small
+   Node script (not guessed) and landing on 80% opacity (~3.6:1, real
+   margin over the minimum) — still visibly secondary to the bold black
+   heading next to it.
+2. **"02"/"03" section-marker tracking.** `tracking-[0.2em]` on a
+   2-character numeral has only one letter-gap to stretch, so it read
+   as "0 2"/"0 3" rather than a single compact numeral. Fixed
+   consistently on both markers with `tracking-tight`.
+3. **Mobile nav touch target.** Found during the final whole-page audit
+   (§21.8): NavBar's hamburger button measured 40×40px, under this
+   project's own established 44px touch-target bar (the bar already
+   in use for the Comparison drag handle and its mobile toggle
+   buttons) — though still inside WCAG 2.2's 24×24px AA minimum either
+   way. Bumped to 44×44px for consistency with the rest of the site.
+
+Also re-verified at the end of this phase, on the fully assembled
+page: 0 axe violations with the mobile nav menu open, 0 axe violations
+under `prefers-reduced-motion`, correct landmark structure (one
+`header`, one `main`, two `nav` — primary + footer, each independently
+`aria-label`led — two `footer` elements — the page footer plus the
+Testimonial's own semantic attribution `<footer>`, both valid uses),
+exactly one `h1`, and a clean heading order with no skipped levels.
+
+## 21.7 Lighthouse: before vs. after (final)
+
+Same methodology note as §20.4 applies and is worth repeating given
+how easy it is to conflate: the "Live Propsoch baseline" column is
+**lab data from PageSpeed Insights** against the real deployed site
+(§3), which also has separate **field/CrUX data** reported alongside
+it in §3.1/§3.2 (mobile field LCP 3.1s / INP 397ms / Core Web Vitals
+**Failed**; desktop field LCP 1.3s / INP 106ms / Core Web Vitals
+**Passed**) — real users, not a lab run. Every "after" column below is
+a **lab measurement** from Lighthouse run locally against a production
+(`next build` + `next start`) build on localhost. These are not the
+same methodology and are not directly comparable to each other; once
+this project is deployed, a PSI run against the live URL is the number
+that should be quoted for field comparison, and this table should be
+refreshed at that point.
+
+**Mobile**
+
+| Metric | Live baseline (lab) | Static build | Motion upgrade (§20.7) | Phase 3 + final audit (§21) |
+|---|---|---|---|---|
+| Performance | 43 | 99 | 98 | **99** |
+| Accessibility | 84 | 100 | 100 | **100** |
+| Best Practices | 100 | 100 | 100 | **100** |
+| SEO | 100 | 100 | 100 | **100** |
+| LCP | 5.9s | 2.3s | 2.3s | **2.3s** |
+| TBT | 1,750ms | 50ms | 50ms | **50ms** |
+| Speed Index | 8.4s | 1.1s | 1.1s | **1.1s** |
+| CLS | 0 | 0 | 0 | **0** |
+
+**Desktop**
+
+| Metric | Live baseline (lab) | Static build | Motion upgrade (§20.7) | Phase 3 + final audit (§21) |
+|---|---|---|---|---|
+| Performance | 57 | 100 | 100 | **100** |
+| Accessibility | 80 | 100 | 100 | **100** |
+| Best Practices | 100 | 100 | 100 | **100** |
+| SEO | 92 | 100 | 100 | **100** |
+| LCP | 1.7s | 0.5s | 0.5s | **0.5s** |
+| TBT | 1,570ms | 0ms | 0ms | **0ms** |
+| Speed Index | 2.7s | 0.3s | 0.3s | **0.3s** |
+| CLS | 0.001 | 0 | 0 | **0** |
+
+Transfer/requests moved from 218KB/12 requests (§20.7) to **219KB/12
+requests** — the entire Phase 3 redesign (a genuinely large visual
+change across six sections) added roughly 1KB, because it changed
+Tailwind classes and composition, not the underlying assets. The
+mobile Performance score moving between 98 and 99 across runs is
+ordinary Lighthouse run-to-run variance, the same spread that shows up
+between repeated runs of the *identical* build — not a real
+regression or improvement to read into.
+
+## 21.8 Final whole-page audit findings
+
+Performed against the fully assembled page, not per-section:
+
+- **Responsive:** 0px horizontal overflow at 320/375/390/768/1024/
+  1280/1440, verified on the complete page (all sections together, not
+  isolated).
+- **LCP element, confirmed directly** (via a `PerformanceObserver` in a
+  real browser, not inferred from a Lighthouse label): the Hero
+  `<h1>` text itself, painting at 152ms. Text, not an image, is the
+  page's largest paint event — a direct, measured consequence of the
+  zero-image strategy in §20.2/§21.4.
+- **Render-blocking resources:** Lighthouse's insight audit flags the
+  single compiled CSS file (8KB, ~350ms estimated FCP/LCP savings if
+  inlined). This is an inherent, expected cost of shipping any CSS via
+  a stylesheet at all, not a defect introduced by this project — and
+  with Performance already at 99–100, inlining critical CSS was judged
+  not worth the added build complexity for a marginal, mostly
+  theoretical gain. Left as-is, documented rather than silently
+  ignored.
+- **Unused JavaScript:** ~55KB combined across two framework chunks
+  (of a ~140KB total JS payload). Confirmed via the network request
+  breakdown that these are React/Next.js/Turbopack runtime chunks, not
+  application code — the same finding already documented in §20.4,
+  unchanged by this phase, and not addressable without ejecting from
+  the framework the assignment requires.
+- **Two small code-quality fixes made and verified** (see §21.6 for the
+  touch-target one): four unused CSS custom properties
+  (`--duration-micro`/`--duration-standard`/`--duration-editorial`/
+  `--ease-standard`) from the Phase 3 token-foundation commit that
+  nothing ever ended up consuming, plus a pre-existing unused
+  `--animate-fade-up`/`@keyframes fade-up` pair left over from the
+  original project scaffold — both confirmed via a full-codebase grep
+  to have zero consumers, then removed.
+- **One duplication found, deliberately left alone:** `AccentWord` (the
+  small helper that wraps one word in the serif-italic accent face) is
+  defined identically in `Hero.tsx` and `BrochureReality.tsx`. This
+  project's own stated rule, applied consistently since §21.2, is to
+  extract a shared helper only once a genuine third usage appears —
+  none has — so two small, harmless copies stay rather than becoming a
+  premature shared component.
+- Full drag/keyboard/mobile-toggle/scroll interaction test re-run on
+  the final build with zero change in behavior; reduced-motion fallback
+  re-confirmed; `axe-core` re-run with 0 violations.
+
+## 21.9 Assignment requirements — final compliance check
+
+Checked against the repository directly, not assumed:
+
+| Requirement | Status | Evidence |
+|---|---|---|
+| Redesigned landing page | Done | `app/page.tsx` composes 7 redesigned sections |
+| Redesigned hero | Done | §21.3; `components/Hero.tsx` |
+| Two additional original sections rebuilt | Done | Brochure vs Reality + 25-Day Journey (§7, §21.3) |
+| Desktop responsive | Done | §21.8; verified 1024/1280/1440 |
+| Mobile responsive | Done | §21.8; verified 320/375/390/768 |
+| Optimized images/assets | Done, by a documented alternative | Zero raster/vector image files in the repo at any point (verified by search); see §20.2/§21.4 for the reasoning |
+| Next.js | Done | `next@16.3.5`, App Router |
+| TypeScript | Done | `tsc --noEmit` passes clean |
+| Tailwind CSS | Done | Tailwind v4, CSS-based `@theme` config |
+| Analysis/documentation in README | Done | §2–6 (audit), §21 (this section) |
+| Lighthouse baseline documented | Done | §3, sourced from PageSpeed Insights against the live site |
+| Five UX/UI issues documented | Done | §5 |
+| Explanation of how each issue was addressed | Done | §5 "Fix" subsections, cross-referenced against the actual implementation in §20/§21 |
+| Before/after performance evidence | Done | §21.7 |
+| GitHub repository | Done | this repository |
+| Deployed site | **Not done** | see §21.10 |
+
+The only unmet item is deployment, which is a genuine gap, not a
+documentation omission — see §21.10 for exactly what's outstanding.
+
+## 21.10 Deployment status
+
+**Not yet deployed.** This requires a decision the repository itself
+can't make — a Vercel (or equivalent) account to deploy under — and
+was flagged as outstanding earlier in the project. Locally, `npm run
+build && npm run start` reproduces the exact production build every
+Lighthouse number in this README was measured against. Once deployed,
+the two remaining steps are: (1) run PageSpeed Insights against the
+live URL for a real field-data comparison against §3's baseline, and
+(2) add the deployed URL here and to the repository description, per
+the assignment's submission requirement.
