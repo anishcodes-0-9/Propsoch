@@ -36,7 +36,7 @@ function HeroVisual() {
             <span className="text-[11px] font-semibold uppercase tracking-wide text-muted">
               Builder Brochure
             </span>
-            <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[10px] font-bold uppercase text-brand-dark">
+            <span className="rounded-full bg-brand-dark px-2 py-0.5 text-[10px] font-bold uppercase text-white">
               For Sale
             </span>
           </div>
@@ -105,7 +105,7 @@ export default function Hero() {
           <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
             <a
               href={hero.primaryCta.href}
-              className="inline-flex items-center justify-center rounded-full bg-brand px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-dark sm:text-base"
+              className="inline-flex items-center justify-center rounded-full bg-brand-dark px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-hover sm:text-base"
             >
               {hero.primaryCta.label}
             </a>

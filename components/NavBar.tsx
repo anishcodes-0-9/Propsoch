@@ -21,7 +21,7 @@ export default function NavBar() {
         className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 sm:px-8"
       >
         <a href="#top" className="text-lg font-extrabold tracking-tight text-ink">
-          Props<span className="text-brand">och</span>
+          Props<span className="text-brand-dark">och</span>
         </a>
 
         <ul className="hidden items-center gap-8 md:flex">
@@ -29,7 +29,7 @@ export default function NavBar() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="text-sm font-medium text-ink-soft transition-colors hover:text-brand"
+                className="text-sm font-medium text-ink-soft transition-colors hover:text-brand-dark"
               >
                 {link.label}
               </a>
@@ -39,7 +39,7 @@ export default function NavBar() {
 
         <a
           href={nav.cta.href}
-          className="hidden rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-dark md:inline-block"
+          className="hidden rounded-full bg-brand-dark px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-hover md:inline-block"
         >
           {nav.cta.label}
         </a>
@@ -80,7 +80,7 @@ export default function NavBar() {
                 <a
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-lg px-2 py-3 text-base font-medium text-ink-soft hover:bg-brand-tint hover:text-brand"
+                  className="block rounded-lg px-2 py-3 text-base font-medium text-ink-soft hover:bg-brand-tint hover:text-brand-dark"
                 >
                   {link.label}
                 </a>
@@ -90,7 +90,7 @@ export default function NavBar() {
           <a
             href={nav.cta.href}
             onClick={() => setOpen(false)}
-            className="mt-3 block rounded-full bg-brand px-5 py-3 text-center text-sm font-semibold text-white"
+            className="mt-3 block rounded-full bg-brand-dark px-5 py-3 text-center text-sm font-semibold text-white"
           >
             {nav.cta.label}
           </a>

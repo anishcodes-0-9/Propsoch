@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <div>
           <a href="#top" className="text-base font-extrabold tracking-tight text-ink">
-            Props<span className="text-brand">och</span>
+            Props<span className="text-brand-dark">och</span>
           </a>
           <p className="mt-2 text-xs text-muted">
             © {footer.year} {footer.company}. All rights reserved.

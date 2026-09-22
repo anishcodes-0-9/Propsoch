@@ -91,7 +91,7 @@ export default function BrochureReality() {
 
         {/* Reality panel */}
         <div className="relative rounded-2xl border-2 border-brand bg-brand-tint p-7 shadow-sm md:rounded-l-none md:p-10">
-          <span className="inline-flex rounded-full bg-brand px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+          <span className="inline-flex rounded-full bg-brand-dark px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
             {brochureReality.reality.label}
           </span>
           <p className="mt-3 text-sm font-medium text-brand-dark">

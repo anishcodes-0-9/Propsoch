@@ -15,7 +15,7 @@ export default function TrustBar() {
           {trust.companies.map((company) => (
             <li
               key={company}
-              className="text-sm font-bold tracking-tight text-ink-soft/70 sm:text-base"
+              className="text-sm font-bold tracking-tight text-muted sm:text-base"
             >
               {company}
             </li>

@@ -36,7 +36,7 @@ export default function FinalCta() {
 
         <a
           href={finalCta.cta.href}
-          className="mt-9 inline-flex items-center justify-center rounded-full bg-brand px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-dark sm:text-base"
+          className="mt-9 inline-flex items-center justify-center rounded-full bg-brand-dark px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-hover sm:text-base"
         >
           {finalCta.cta.label}
         </a>

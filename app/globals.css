@@ -9,6 +9,7 @@
   --color-line: #e7e0d5;
   --color-brand: #e15a25;
   --color-brand-dark: #b8461a;
+  --color-brand-hover: #9c3814;
   --color-brand-soft: #fbe6d8;
   --color-brand-tint: #fdf1e8;
 }
@@ -22,6 +23,7 @@
   --color-line: var(--color-line);
   --color-brand: var(--color-brand);
   --color-brand-dark: var(--color-brand-dark);
+  --color-brand-hover: var(--color-brand-hover);
   --color-brand-soft: var(--color-brand-soft);
   --color-brand-tint: var(--color-brand-tint);
   --font-sans: var(--font-jakarta);
