@@ -1,5 +1,22 @@
 import { finalCta } from "@/lib/content";
 
+// Same accent treatment as Hero/Comparison's AccentWord — an italic serif
+// face picks out the one figure worth lingering on, without turning it into
+// a separate stat card or dashboard. `text-brand` rather than `text-brand-dark`
+// since this section sits on the dark ink background, where brand-dark reads
+// too close to it to register as an accent.
+function AccentFigure({ text, accent }: { text: string; accent: string }) {
+  const index = text.indexOf(accent);
+  if (index === -1) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, index)}
+      <em className="font-accent font-normal italic text-brand">{accent}</em>
+      {text.slice(index + accent.length)}
+    </>
+  );
+}
+
 export default function FinalCta() {
   return (
     <section className="bg-ink py-16 sm:py-20 md:py-24">
@@ -16,7 +33,7 @@ export default function FinalCta() {
               03
             </p>
             <h2 className="mt-2 text-h2 font-extrabold tracking-tight text-white">
-              {finalCta.heading}
+              <AccentFigure text={finalCta.heading} accent="~₹4.78L" />
             </h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-white/70">
               {finalCta.subhead}
@@ -29,7 +46,7 @@ export default function FinalCta() {
             </a>
           </div>
 
-          <ul className="mt-10 flex flex-col gap-4 lg:col-span-4 lg:col-start-9 lg:mt-0">
+          <ul className="mt-10 flex flex-col gap-4 border-t border-white/15 pt-6 lg:col-span-4 lg:col-start-9 lg:mt-0">
             {finalCta.benefits.map((benefit) => (
               <li key={benefit} className="flex items-start gap-2.5 text-sm text-white/85">
                 <svg
