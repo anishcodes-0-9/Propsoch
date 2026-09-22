@@ -105,6 +105,7 @@ export const journey = {
         "We handle the negotiation and help you seal the best deal, on your timeline.",
     },
   ],
+  conclusion: "Congratulations — you've found your home sweet home.",
 };
 
 export const testimonial = {
