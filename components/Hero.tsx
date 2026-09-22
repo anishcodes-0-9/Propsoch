@@ -16,86 +16,80 @@ function AccentWord({ text, accent }: { text: string; accent: string }) {
   );
 }
 
-function CheckRow({ label }: { label: string }) {
+// Authored line breaks at natural phrase boundaries, active only at the
+// `lg` breakpoint and up, where there's room for them. Below `lg` each
+// fragment is inline by default and the sentence flows and wraps exactly
+// as it always did — `lg:block` is what forces the break. This keeps the
+// oversized `--text-display-lg` scale from ever having to prove it fits
+// a forced 3-line break on a 320px viewport; it only has to fit at
+// widths wide enough to opt into it.
+function Headline({ text, accent }: { text: string; accent: string }) {
+  const breakAfter = ["trust", "pitch,"];
+  let remaining = text;
+  const lines: string[] = [];
+  for (const marker of breakAfter) {
+    const idx = remaining.indexOf(marker);
+    if (idx === -1) break;
+    const cut = idx + marker.length;
+    lines.push(remaining.slice(0, cut));
+    remaining = remaining.slice(cut).trimStart();
+  }
+  if (remaining) lines.push(remaining);
+  if (lines.length === 0) lines.push(text);
+
   return (
-    <li className="flex items-center gap-2.5 text-[13px] font-medium text-ink-soft">
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 20 20"
-        className="h-4.5 w-4.5 shrink-0 text-brand"
-        fill="none"
-      >
-        <circle cx="10" cy="10" r="9" fill="currentColor" opacity="0.12" />
-        <path
-          d="M6.5 10.2l2.2 2.2 4.8-4.9"
-          stroke="currentColor"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-      {label}
-    </li>
+    <>
+      {lines.map((line, i) => (
+        <span key={line} className="lg:block">
+          {i === lines.length - 1 ? (
+            <AccentWord text={line} accent={accent} />
+          ) : (
+            line
+          )}
+          {i < lines.length - 1 ? " " : ""}
+        </span>
+      ))}
+    </>
   );
 }
 
-function HeroVisual() {
+// A single rule with a few irregularly-spaced tick marks, each labeled
+// with one of Propsoch's own verification points (see lib/content.ts).
+// Domain-specific supporting evidence, not an abstract diagram — and
+// fully decorative to assistive tech, since every label here also
+// appears as real, readable text in the Comparison section below.
+// First/last ticks are edge-anchored (safe at any width, since they
+// extend inward from the section's own padding); the middle tick only
+// joins at `md` and up, where there's clearly room for a third label —
+// this is the "compresses to fewer ticks on mobile" behavior from the
+// redesign plan, not a full hide.
+function VerificationLine({ points }: { points: string[] }) {
+  const [first, middle, last] = points;
   return (
     <div
       aria-hidden="true"
-      className="relative mx-auto w-full max-w-sm select-none sm:max-w-md lg:max-w-none"
+      className="relative mt-10 min-h-20 w-full sm:mt-12 lg:mt-16"
     >
-      <div className="relative aspect-[5/4] w-full">
-        {/* Back card: the "brochure" — glossy, generic, all upside */}
-        <div className="absolute left-0 top-2 w-[78%] -rotate-6 rounded-2xl border border-line bg-paper-raised p-4 shadow-md sm:p-5">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wide text-muted">
-              Builder Brochure
-            </span>
-            <span className="rounded-full bg-brand-dark px-2 py-0.5 text-[10px] font-bold uppercase text-white">
-              For Sale
-            </span>
-          </div>
-          <div className="grid grid-cols-3 gap-1.5">
-            <div className="col-span-2 h-14 rounded-lg bg-line/70 sm:h-16" />
-            <div className="h-14 rounded-lg bg-line/70 sm:h-16" />
-          </div>
-          <div className="mt-3 space-y-1.5">
-            <div className="h-1.5 w-5/6 rounded-full bg-line" />
-            <div className="h-1.5 w-3/5 rounded-full bg-line" />
-          </div>
+      <div className="absolute inset-x-0 top-0 h-px bg-brand-dark" />
+      <div className="absolute left-0 top-0 flex w-28 flex-col items-start text-left sm:w-32">
+        <span className="h-2.5 w-px bg-brand-dark" />
+        <span className="mt-2 text-metadata leading-snug text-muted">
+          {first}
+        </span>
+      </div>
+      {middle && (
+        <div className="absolute top-0 left-[42%] hidden w-32 -translate-x-1/2 flex-col items-center text-center md:flex">
+          <span className="h-2.5 w-px bg-brand-dark" />
+          <span className="mt-2 text-metadata leading-snug text-muted">
+            {middle}
+          </span>
         </div>
-
-        {/* Front card: the "reality" — verified, specific, trustworthy */}
-        <div className="absolute bottom-0 right-0 w-[74%] rotate-2 rounded-2xl border border-line bg-paper-raised p-4 pt-5 shadow-xl sm:p-5 sm:pt-6">
-          <div className="mb-3 flex items-center justify-between gap-2">
-            <span className="text-[11px] font-semibold uppercase tracking-wide text-brand-dark">
-              Reality Check
-            </span>
-            <span className="shrink-0 rounded-full bg-ink px-2 py-0.5 text-[10px] font-bold text-white">
-              80+ verified
-            </span>
-          </div>
-          <ul className="space-y-2">
-            <CheckRow label="Layout & sunlight, checked on-site" />
-            <CheckRow label="Builder track record reviewed" />
-            <CheckRow label="RERA & legal status confirmed" />
-          </ul>
-
-          {/* Magnifying glass — the investigation motif, pinned to the card corner so
-              it never collides with the header text at any viewport width. */}
-          <div className="absolute -left-5 -top-5 flex h-11 w-11 items-center justify-center rounded-full border-2 border-paper bg-brand text-white shadow-lg sm:h-12 sm:w-12">
-            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none">
-              <circle cx="10.5" cy="10.5" r="6" stroke="currentColor" strokeWidth="1.8" />
-              <path
-                d="M19 19l-3.8-3.8"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-        </div>
+      )}
+      <div className="absolute right-0 top-0 flex w-28 flex-col items-end text-right sm:w-32">
+        <span className="h-2.5 w-px bg-brand-dark" />
+        <span className="mt-2 text-metadata leading-snug text-muted">
+          {last}
+        </span>
       </div>
     </div>
   );
@@ -104,29 +98,36 @@ function HeroVisual() {
 export default function Hero() {
   return (
     <section className="mx-auto max-w-6xl px-5 pt-10 pb-14 sm:px-8 md:pt-14 md:pb-20 lg:pt-20">
-      <div className="grid items-center gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14">
-        <div>
-          <span
-            role="group"
-            className="grid items-center rounded-full bg-brand-tint px-3 py-1 text-xs font-semibold text-brand-dark"
-            aria-label={hero.eyebrowRotation.join(" — ")}
-          >
-            {hero.eyebrowRotation.map((phrase) => (
-              <span key={phrase} className="eyebrow-phrase whitespace-nowrap" aria-hidden="true">
-                {phrase}
-              </span>
-            ))}
-          </span>
+      <div className="flex flex-col items-start gap-2">
+        <span
+          role="group"
+          className="grid items-center text-eyebrow font-semibold uppercase tracking-[0.14em] text-brand-dark"
+          aria-label={hero.eyebrowRotation.join(" — ")}
+        >
+          {hero.eyebrowRotation.map((phrase) => (
+            <span
+              key={phrase}
+              className="eyebrow-phrase whitespace-nowrap"
+              aria-hidden="true"
+            >
+              {phrase}
+            </span>
+          ))}
+        </span>
+        <span aria-hidden="true" className="h-px w-10 bg-brand-dark" />
+      </div>
 
-          <h1 className="mt-4 text-display font-extrabold leading-[1.05] tracking-tight text-ink">
-            <AccentWord text={hero.headline} accent="reality" />
-          </h1>
+      <div className="mt-5 lg:grid lg:grid-cols-12 lg:items-end lg:gap-x-8">
+        <h1 className="text-display font-extrabold leading-[1.08] tracking-tight text-ink lg:col-span-8 lg:text-display-lg lg:leading-[1.04]">
+          <Headline text={hero.headline} accent="reality" />
+        </h1>
 
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft sm:text-lg">
+        <div className="mt-6 lg:col-span-4 lg:col-start-9 lg:mt-0">
+          <p className="max-w-xl text-base leading-relaxed text-ink-soft sm:text-lg lg:max-w-none">
             {hero.subhead}
           </p>
 
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-stretch">
             <a
               href={hero.primaryCta.href}
               className="inline-flex items-center justify-center rounded-full bg-brand-dark px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-hover sm:text-base"
@@ -141,13 +142,13 @@ export default function Hero() {
             </a>
           </div>
 
-          <p className="mt-4 text-xs font-medium text-muted">{hero.reassurance}</p>
-        </div>
-
-        <div className="lg:order-last">
-          <HeroVisual />
+          <p className="mt-4 text-metadata font-medium text-muted">
+            {hero.reassurance}
+          </p>
         </div>
       </div>
+
+      <VerificationLine points={hero.verificationPoints} />
     </section>
   );
 }

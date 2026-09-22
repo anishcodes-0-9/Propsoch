@@ -27,6 +27,14 @@ export const hero = {
   primaryCta: { label: "Book a Free Call", href: "mailto:club@propsoch.com" },
   secondaryCta: { label: "See the 25-day journey", href: "#journey" },
   reassurance: "RERA registered · No cost until you're matched",
+  // Short verification labels for the hero's measurement-line motif.
+  // Relocated from the previous HeroVisual mockup card's checklist, not
+  // new copy — same three points, now centralized here as content.
+  verificationPoints: [
+    "Layout & sunlight, checked on-site",
+    "Builder track record reviewed",
+    "RERA & legal status confirmed",
+  ],
 };
 
 export const trust = {
