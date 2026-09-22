@@ -94,6 +94,25 @@
   }
 }
 
+/* Trust-logo marquee — a single continuous transform, no JS/carousel
+   library. The track holds the logo list twice back-to-back; translating
+   exactly -50% moves by one full set-width, so the loop is seamless. */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee 32s linear infinite;
+  will-change: transform;
+}
+
+.marquee-wrapper:hover .marquee-track,
+.marquee-wrapper:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
 html {
   scroll-behavior: smooth;
 }
