@@ -154,18 +154,20 @@ export default function BrochureRealityCompare() {
   };
 
   return (
-    <div className="mt-12">
+    <div>
       <div
         ref={containerRef}
         onPointerDown={onPointerDown}
-        className="relative grid overflow-hidden rounded-2xl border border-line shadow-sm md:cursor-ew-resize"
+        className="relative grid overflow-hidden md:cursor-ew-resize"
       >
-        {/* Brochure layer — bottom, always full */}
-        <div className="relative col-start-1 row-start-1 overflow-hidden bg-[repeating-linear-gradient(135deg,var(--color-line)_0px,var(--color-line)_1px,transparent_1px,transparent_14px)] bg-paper-raised p-7 sm:p-10">
-          <span className="inline-flex rounded-full bg-ink px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+        {/* Brochure layer — bottom, always full. Label is running type, not
+            a badge — bolder/larger than a caption so which side is which
+            reads instantly without needing chrome to carry the meaning. */}
+        <div className="relative col-start-1 row-start-1 overflow-hidden bg-[repeating-linear-gradient(135deg,var(--color-line)_0px,var(--color-line)_1px,transparent_1px,transparent_14px)] bg-paper-raised p-7 sm:p-10 lg:p-14">
+          <span className="text-base font-extrabold uppercase tracking-wide text-ink sm:text-lg">
             {brochureReality.brochure.label}
           </span>
-          <p className="mt-3 text-sm font-medium text-muted">{brochureReality.brochure.caption}</p>
+          <p className="mt-2 text-sm font-medium text-muted">{brochureReality.brochure.caption}</p>
           <ul className="mt-6 space-y-3.5">
             {brochureReality.brochure.points.map((point) => (
               <XRow key={point} label={point} />
@@ -176,17 +178,17 @@ export default function BrochureRealityCompare() {
         {/* Reality layer — top, clipped to the current split */}
         <div
           ref={realityLayerRef}
-          className="relative col-start-1 row-start-1 overflow-hidden border-l-2 border-brand bg-brand-tint p-7 transition-[clip-path] duration-200 ease-out sm:p-10"
+          className="relative col-start-1 row-start-1 overflow-hidden border-l-2 border-brand bg-brand-tint p-7 transition-[clip-path] duration-200 ease-out sm:p-10 lg:p-14"
           // Bound to `mobileSplit` (not a fixed constant) so a re-render
           // never resets this back to a stale value — see onMobileToggle.
           // On desktop, mobileSplit never changes, so this stays inert while
           // paint() drives the value imperatively during drag.
           style={{ clipPath: `inset(0 ${100 - mobileSplit}% 0 0)` }}
         >
-          <span className="inline-flex rounded-full bg-brand-dark px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">
+          <span className="text-base font-extrabold uppercase tracking-wide text-brand-dark sm:text-lg">
             {brochureReality.reality.label}
           </span>
-          <p className="mt-3 text-sm font-medium text-brand-dark">{brochureReality.reality.caption}</p>
+          <p className="mt-2 text-sm font-medium text-brand-dark">{brochureReality.reality.caption}</p>
           <ul className="mt-6 space-y-3.5">
             {brochureReality.reality.points.map((point) => (
               <CheckRow key={point} label={point} />
@@ -231,13 +233,22 @@ export default function BrochureRealityCompare() {
         </div>
       </div>
 
-      {/* Mobile: tap-toggle, no drag — keeps vertical scroll unambiguous on touch */}
-      <div className="mt-4 flex gap-2 md:hidden" role="group" aria-label="Choose which side to view">
+      {/* Mobile: tap-toggle, no drag — keeps vertical scroll unambiguous on
+          touch. Plain underline tabs, not filled pills — consistent with
+          the retired-rounded-card policy. Horizontal padding here matches
+          the panels' own edge inset, since this row sits inside the same
+          full-bleed strip with no page padding of its own. py-3.5 keeps
+          each tap target at/above the 44px touch-target minimum. */}
+      <div
+        className="flex gap-2 border-t border-line px-7 md:hidden sm:px-10"
+        role="group"
+        aria-label="Choose which side to view"
+      >
         <button
           type="button"
           aria-pressed={mobileSplit === MOBILE_DEFAULT}
           onClick={() => onMobileToggle(MOBILE_DEFAULT)}
-          className="flex-1 rounded-full border border-line px-4 py-2.5 text-sm font-semibold text-ink-soft transition-colors aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white"
+          className="flex-1 border-b-2 border-transparent py-3.5 text-sm font-semibold text-ink-soft transition-colors aria-pressed:border-ink aria-pressed:text-ink"
         >
           {brochureReality.brochure.label}
         </button>
@@ -245,7 +256,7 @@ export default function BrochureRealityCompare() {
           type="button"
           aria-pressed={mobileSplit === MAX}
           onClick={() => onMobileToggle(MAX)}
-          className="flex-1 rounded-full border border-line px-4 py-2.5 text-sm font-semibold text-ink-soft transition-colors aria-pressed:border-brand-dark aria-pressed:bg-brand-dark aria-pressed:text-white"
+          className="flex-1 border-b-2 border-transparent py-3.5 text-sm font-semibold text-ink-soft transition-colors aria-pressed:border-brand-dark aria-pressed:text-brand-dark"
         >
           {brochureReality.reality.label}
         </button>
