@@ -19,7 +19,10 @@ export default function BrochureReality() {
   return (
     <section id="reality" className="mx-auto max-w-6xl px-5 py-16 sm:px-8 md:py-24">
       <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-h2 font-extrabold tracking-tight text-ink">
+        <p aria-hidden="true" className="text-xs font-bold tracking-[0.2em] text-brand-dark">
+          01
+        </p>
+        <h2 className="mt-2 text-h2 font-extrabold tracking-tight text-ink">
           <AccentWord text={brochureReality.heading} accent="reality" />
         </h2>
         <p className="mt-4 text-base leading-relaxed text-ink-soft">

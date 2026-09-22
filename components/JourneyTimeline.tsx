@@ -8,7 +8,10 @@ export default function JourneyTimeline() {
     >
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-h2 font-extrabold tracking-tight text-ink">{journey.heading}</h2>
+          <p aria-hidden="true" className="text-xs font-bold tracking-[0.2em] text-brand-dark">
+            02
+          </p>
+          <h2 className="mt-2 text-h2 font-extrabold tracking-tight text-ink">{journey.heading}</h2>
           <p className="mt-4 text-base leading-relaxed text-ink-soft">{journey.copy}</p>
         </div>
 

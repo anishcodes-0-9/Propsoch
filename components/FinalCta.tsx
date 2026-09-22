@@ -4,7 +4,10 @@ export default function FinalCta() {
   return (
     <section className="bg-ink py-16 sm:py-20 md:py-24">
       <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
-        <h2 className="text-h2 font-extrabold tracking-tight text-white">
+        <p aria-hidden="true" className="text-xs font-bold tracking-[0.2em] text-brand">
+          03
+        </p>
+        <h2 className="mt-2 text-h2 font-extrabold tracking-tight text-white">
           {finalCta.heading}
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-white/70">
