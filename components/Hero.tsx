@@ -95,6 +95,170 @@ function VerificationLine({ points }: { points: string[] }) {
   );
 }
 
+// A restrained site-plan / evidence-board motif: an abstract building
+// footprint (two offset rectangles — no specific property, so nothing here
+// is a fabricated fact) annotated with the same measurement-tick language
+// as VerificationLine below, plus three evidence markers pointing at facts
+// already stated in the hero copy (the 80-point report, verified site
+// visits, RERA registration — see lib/content.ts `hero.subhead` and
+// `hero.reassurance`). No new claims, no invented numbers or coordinates.
+// Two hand-authored variants rather than one SVG scaled down: the compact
+// mobile version drops the caption labels instead of shrinking them past
+// legibility, per the "hide rather than shrink" rule. Fully static (no
+// animation) and fully decorative — aria-hidden, since every label here
+// also exists as real, readable text elsewhere in the Hero.
+function EvidenceBoard() {
+  return (
+    <>
+      <svg
+        viewBox="0 0 320 260"
+        className="hidden h-auto w-56 lg:block xl:w-64"
+        fill="none"
+      >
+        <defs>
+          <pattern
+            id="eb-grid"
+            width="20"
+            height="20"
+            patternUnits="userSpaceOnUse"
+          >
+            <path
+              d="M20 0H0V20"
+              stroke="var(--color-line)"
+              strokeWidth="1"
+            />
+          </pattern>
+        </defs>
+        <rect width="320" height="260" fill="url(#eb-grid)" />
+
+        {/* building footprint */}
+        <rect
+          x="50"
+          y="30"
+          width="130"
+          height="90"
+          stroke="var(--color-ink-soft)"
+          strokeWidth="1.25"
+          opacity="0.55"
+        />
+        <rect
+          x="130"
+          y="95"
+          width="110"
+          height="120"
+          stroke="var(--color-ink-soft)"
+          strokeWidth="1.25"
+          opacity="0.55"
+        />
+
+        {/* measurement ticks, echoing the VerificationLine motif below */}
+        <path
+          d="M50 30v-9M180 30v-9M130 95h-9M240 95h9"
+          stroke="var(--color-brand-dark)"
+          strokeWidth="1.5"
+        />
+
+        {/* orientation indicator — a generic drafting convention, not a
+            property-specific claim */}
+        <g stroke="var(--color-muted)" strokeWidth="1.25" opacity="0.6">
+          <path d="M280 20v26M280 20l-5 9M280 20l5 9" />
+        </g>
+        <text
+          x="280"
+          y="60"
+          textAnchor="middle"
+          fontSize="9"
+          fill="var(--color-muted)"
+          opacity="0.7"
+        >
+          N
+        </text>
+
+        {/* evidence markers */}
+        <circle cx="72" cy="58" r="3" fill="var(--color-brand-dark)" />
+        <path
+          d="M75 58h6"
+          stroke="var(--color-brand-dark)"
+          strokeWidth="1"
+        />
+        <text
+          x="84"
+          y="61"
+          fontSize="8.5"
+          letterSpacing="0.04em"
+          fill="var(--color-ink-soft)"
+        >
+          80-POINT REPORT
+        </text>
+
+        <circle cx="196" cy="112" r="3" fill="var(--color-brand-dark)" />
+        <path
+          d="M199 112h6"
+          stroke="var(--color-brand-dark)"
+          strokeWidth="1"
+        />
+        <text
+          x="208"
+          y="115"
+          fontSize="8.5"
+          letterSpacing="0.04em"
+          fill="var(--color-ink-soft)"
+        >
+          ON-SITE VERIFIED
+        </text>
+
+        <circle cx="148" cy="190" r="3" fill="var(--color-brand-dark)" />
+        <path
+          d="M151 190h6"
+          stroke="var(--color-brand-dark)"
+          strokeWidth="1"
+        />
+        <text
+          x="160"
+          y="193"
+          fontSize="8.5"
+          letterSpacing="0.04em"
+          fill="var(--color-ink-soft)"
+        >
+          RERA REGISTERED
+        </text>
+      </svg>
+
+      <svg
+        viewBox="0 0 320 100"
+        className="h-auto w-full max-w-56 lg:hidden"
+        fill="none"
+      >
+        <rect
+          x="10"
+          y="14"
+          width="130"
+          height="66"
+          stroke="var(--color-ink-soft)"
+          strokeWidth="1.25"
+          opacity="0.55"
+        />
+        <rect
+          x="100"
+          y="46"
+          width="120"
+          height="40"
+          stroke="var(--color-ink-soft)"
+          strokeWidth="1.25"
+          opacity="0.55"
+        />
+        <path
+          d="M10 14v-8M140 14v-8"
+          stroke="var(--color-brand-dark)"
+          strokeWidth="1.5"
+        />
+        <circle cx="55" cy="47" r="3" fill="var(--color-brand-dark)" />
+        <circle cx="160" cy="66" r="3" fill="var(--color-brand-dark)" />
+      </svg>
+    </>
+  );
+}
+
 export default function Hero() {
   return (
     <section className="mx-auto max-w-6xl px-5 pt-10 pb-14 sm:px-8 md:pt-14 md:pb-20 lg:pt-20">
@@ -146,6 +310,13 @@ export default function Hero() {
             {hero.reassurance}
           </p>
         </div>
+      </div>
+
+      <div
+        aria-hidden="true"
+        className="mt-8 flex justify-start sm:mt-10 lg:mt-14 lg:justify-end"
+      >
+        <EvidenceBoard />
       </div>
 
       <VerificationLine points={hero.verificationPoints} />
