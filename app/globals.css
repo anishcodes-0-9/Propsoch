@@ -103,11 +103,6 @@
   will-change: transform;
 }
 
-.marquee-wrapper:hover .marquee-track,
-.marquee-wrapper:focus-within .marquee-track {
-  animation-play-state: paused;
-}
-
 html {
   scroll-behavior: smooth;
 }

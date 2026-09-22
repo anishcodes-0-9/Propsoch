@@ -1,21 +1,52 @@
-// Continuous CSS-only marquee — a single `translateX` loop, no JS/carousel
-// library. The track holds `items` twice back-to-back; translating exactly
-// -50% moves by one full set-width, so the loop is seamless (see the
-// `.marquee-track`/`@keyframes marquee` rules in app/globals.css). The
-// duplicate set is `aria-hidden` so screen readers hear the list once, and
-// a fully static, wrapped fallback renders instead under
-// `prefers-reduced-motion`. Extracted from TrustBar — generic over any
-// string list, not just trust logos.
+import Image from "next/image";
+
+// Real Propsoch-adjacent employer logos (first-party CDN assets, see
+// docs/PHASE4_MEDIA_LAYER_PLAN.md for provenance) — keyed by company name so
+// this stays independent of `lib/content.ts`'s own `trust.companies` list.
+// Intrinsic width/height are each logo's real optimized-asset dimensions
+// (next/image needs these for its aspect-ratio math; the CSS below is what
+// actually controls display size).
+const LOGOS: Record<string, { src: string; width: number; height: number }> = {
+  Amazon: { src: "/images/logos/amazon.webp", width: 159, height: 48 },
+  Google: { src: "/images/logos/google.webp", width: 143, height: 48 },
+  Microsoft: { src: "/images/logos/microsoft.webp", width: 225, height: 48 },
+  Deloitte: { src: "/images/logos/deloitte.webp", width: 358, height: 96 },
+  Flipkart: { src: "/images/logos/flipkart.webp", width: 364, height: 96 },
+  Atlassian: { src: "/images/logos/atlassian.webp", width: 288, height: 96 },
+  NVIDIA: { src: "/images/logos/nvidia.webp", width: 524, height: 96 },
+  PhonePe: { src: "/images/logos/phonepe.webp", width: 315, height: 96 },
+  Navi: { src: "/images/logos/navi.webp", width: 356, height: 96 },
+};
+
+// Grayscale/muted at rest; full color, full opacity and a small scale on
+// hover OR keyboard focus — never both a hover pause and a color change, the
+// marquee's own translateX keeps running the whole time (parent and child
+// transforms compose independently on their own boxes). tabIndex={0} makes
+// each real (non-duplicate) logo reachable so keyboard users get the same
+// state mouse users get; the duplicate half stays untabbable (img isn't
+// focusable by default, and it's already aria-hidden).
+function Logo({ name, focusable }: { name: string; focusable: boolean }) {
+  const logo = LOGOS[name];
+  if (!logo) return null;
+  return (
+    <Image
+      src={logo.src}
+      alt={name}
+      width={logo.width}
+      height={logo.height}
+      tabIndex={focusable ? 0 : undefined}
+      className="h-6 w-auto shrink-0 grayscale opacity-60 transition-[filter,opacity,scale] duration-300 hover:scale-105 hover:opacity-100 hover:grayscale-0 focus-visible:scale-105 focus-visible:opacity-100 focus-visible:grayscale-0 sm:h-7"
+    />
+  );
+}
+
 export default function Marquee({ items }: { items: string[] }) {
   return (
     <>
-      <ul className="hidden flex-wrap items-center gap-x-8 gap-y-3 motion-reduce:flex sm:gap-x-10">
+      <ul className="hidden flex-wrap items-center gap-x-8 gap-y-4 motion-reduce:flex sm:gap-x-10">
         {items.map((item) => (
-          <li
-            key={item}
-            className="text-sm font-bold tracking-tight text-muted sm:text-base"
-          >
-            {item}
+          <li key={item}>
+            <Logo name={item} focusable />
           </li>
         ))}
       </ul>
@@ -25,26 +56,19 @@ export default function Marquee({ items }: { items: string[] }) {
           zone sits directly on top of whatever is the first item, clipping
           it. A blank leading spacer — the same width in both halves, so
           the two "sides" of the -50% loop stay equal-width and the wrap
-          stays seamless — pushes real text past the fade zone instead. */}
+          stays seamless — pushes real content past the fade zone instead. */}
       <div className="marquee-wrapper relative overflow-hidden motion-reduce:hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
         <ul className="marquee-track flex w-max items-center gap-x-10 sm:gap-x-12">
           <li aria-hidden="true" className="w-10 shrink-0 sm:w-16" />
           {items.map((item) => (
-            <li
-              key={item}
-              className="shrink-0 text-sm font-bold tracking-tight text-muted sm:text-base"
-            >
-              {item}
+            <li key={item}>
+              <Logo name={item} focusable />
             </li>
           ))}
           <li aria-hidden="true" className="w-10 shrink-0 sm:w-16" />
           {items.map((item) => (
-            <li
-              key={`dup-${item}`}
-              aria-hidden="true"
-              className="shrink-0 text-sm font-bold tracking-tight text-muted sm:text-base"
-            >
-              {item}
+            <li key={`dup-${item}`} aria-hidden="true">
+              <Logo name={item} focusable={false} />
             </li>
           ))}
         </ul>
