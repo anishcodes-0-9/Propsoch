@@ -17,10 +17,7 @@ export default function JourneyTimeline() {
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <div className="lg:grid lg:grid-cols-12 lg:gap-x-8">
           <div className="lg:col-span-7">
-            <p
-              aria-hidden="true"
-              className="text-xs font-bold tracking-[0.2em] text-brand-dark"
-            >
+            <p aria-hidden="true" className="text-xs font-bold tracking-tight text-brand-dark">
               02
             </p>
             <h2 className="mt-2 text-h2 font-extrabold tracking-tight text-ink">
