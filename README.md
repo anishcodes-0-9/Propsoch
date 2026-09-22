@@ -1026,11 +1026,10 @@ against the Section 3 baseline.
   CTA answer "what is Propsoch / why should I care / what do I do next" in
   the first viewport on both mobile and desktop. The supporting visual is an
   original illustration (see 20.2), not the original site's photography.
-- **Brochure vs Reality** — rebuilt as a CSS-only comparison (no drag
-  slider, no JS library): side-by-side on desktop, stacked on mobile, with
-  distinct visual treatment for each side (muted/hatched "Brochure" panel
-  vs. bordered, tinted "Reality" panel) so it reads as a real contrast
-  rather than two plain cards.
+- **Brochure vs Reality** — an accessible drag comparison (desktop) / tap
+  toggle (mobile) between overlaid "Brochure" and "Reality" panels, built
+  with `clip-path` + vanilla pointer events (no slider library). See
+  §20.7 for why this reverses an earlier "CSS-only, no drag" decision.
 - **25-Day Journey** — a responsive timeline (vertical with a connecting
   line on mobile, horizontal on large screens), built with the real staged
   copy from the live site (Today → Week 1 → Week 2 → Week 3 → Last Week).
@@ -1068,16 +1067,18 @@ Implemented alongside each component, then verified rather than assumed:
   missed — white text on the base brand orange (3.45–3.69:1) — which is
   why buttons/badges use the darker `brand-dark` token (5.34:1+) and the
   lighter orange is reserved for icon-only, non-text circles.
-- `prefers-reduced-motion` is respected globally; there is no
-  scroll-linked or decorative animation to begin with.
+- `prefers-reduced-motion` is respected on every animated element added
+  after the initial build too (hero word-cycle, trust marquee, comparison
+  transitions) — see §20.7.
 
 ## 20.4 Performance
 
-Server components throughout except `NavBar` (the only "use client",
-for the mobile menu toggle). No animation library, no third-party scripts,
-no image CDN — self-hosted variable font via `next/font`, CSS-only
-interactions and transitions. Total page transfer on a production build is
-~223 KB across 11 requests.
+Two client components: `NavBar` (mobile menu) and `BrochureRealityCompare`
+(the drag/toggle comparison, added in §20.7). Everything else stays a
+server component. No animation library, no third-party scripts, no image
+CDN — self-hosted fonts via `next/font`, CSS/pointer-event interactions
+only. Total page transfer on a production build is ~218 KB across 12
+requests.
 
 ### Lighthouse: before vs. after
 
@@ -1090,37 +1091,98 @@ refreshed once that's available.
 
 **Mobile**
 
-| Metric | Before | After |
-|---|---|---|
-| Performance | 43 | **99** |
-| Accessibility | 84 | **100** |
-| Best Practices | 100 | 100 |
-| SEO | 100 | 100 |
-| LCP | 5.9s | **2.3s** |
-| TBT | 1,750ms | **50ms** |
-| Speed Index | 8.4s | **1.1s** |
-| CLS | 0 | 0 |
+| Metric | Live Propsoch baseline | Static build (§20.1-20.4) | After motion/interaction (§20.7) |
+|---|---|---|---|
+| Performance | 43 | 99 | **98** |
+| Accessibility | 84 | 100 | **100** |
+| Best Practices | 100 | 100 | **100** |
+| SEO | 100 | 100 | **100** |
+| LCP | 5.9s | 2.3s | **2.3s** |
+| TBT | 1,750ms | 50ms | **50ms** |
+| Speed Index | 8.4s | 1.1s | **1.1s** |
+| CLS | 0 | 0 | **0** |
 
 **Desktop**
 
-| Metric | Before | After |
-|---|---|---|
-| Performance | 57 | **100** |
-| Accessibility | 80 | **100** |
-| Best Practices | 100 | 100 |
-| SEO | 92 | **100** |
-| LCP | 1.7s | **0.5s** |
-| TBT | 1,570ms | **0ms** |
-| Speed Index | 2.7s | **0.3s** |
-| CLS | 0.001 | 0 |
+| Metric | Live Propsoch baseline | Static build (§20.1-20.4) | After motion/interaction (§20.7) |
+|---|---|---|---|
+| Performance | 57 | 100 | **100** |
+| Accessibility | 80 | 100 | **100** |
+| Best Practices | 100 | 100 | **100** |
+| SEO | 92 | 100 | **100** |
+| LCP | 1.7s | 0.5s | **0.5s** |
+| TBT | 1,570ms | 0ms | **0ms** |
+| Speed Index | 2.7s | 0.3s | **0.3s** |
+| CLS | 0.001 | 0 | **0** |
 
-## 20.5 What's intentionally unchanged from the plan
+Mobile Performance moving 99→98 between builds is normal Lighthouse
+run-to-run variance (the same ±1 spread shows up between individual runs of
+the *same* build) — see §20.7 for the request/byte-level breakdown of what
+was actually added.
 
-The original site's JS drag-to-compare slider was replaced with a CSS-only
-composition per Section 4.3/4.1 (JS and image weight were the two biggest
-baseline problems). No animation or comparison-slider library was added.
+## 20.5 Reference research
+
+Two research documents were produced and reviewed before touching this
+code further: `docs/INTERACTION_AUDIT.md` (reverse-engineers the live
+Propsoch site's own hero word-cycle, trust-logo marquee and drag-compare
+slider) and `docs/DESIGN_DIRECTION.md` (a recursive pass across the
+HubSpot theme marketplace, Dribbble, an editorial round-up of real premium
+real-estate sites, and the live site again, extracting ~20 reusable
+patterns with a keep/reject rationale for each). §20.7 is what came out of
+implementing the approved subset.
 
 ## 20.6 Deployed site
 
 _Deployed URL: TBD — see repository for local run instructions
 (`npm install && npm run dev`)._
+
+## 20.7 Motion & interaction upgrade (post-launch, approved from §20.5's research)
+
+Implemented in five small, individually-verified commits, each gated on a
+production-build Lighthouse run + `axe-core` scan before moving to the
+next:
+
+- **Serif-italic accent typography.** One self-hosted weight (Instrument
+  Serif, italic only) applied to exactly one word — "reality" — in two
+  headings. +16KB, zero LCP/CLS impact (it's not the LCP element).
+- **Hero rotating eyebrow phrase.** Three phrases cycling in the hero
+  badge, CSS-only (`opacity`/`transform`, ~6s loop), `prefers-reduced-
+  motion`-aware, full meaning available via a group `aria-label` rather
+  than depending on the animation. Caught and fixed a real regression here:
+  `aria-label` on a bare `<span>` is an axe "aria-prohibited-attr"
+  violation and dropped Accessibility 100→96/95 — fixed with `role="group"`.
+- **CSS-only trust-logo marquee.** Continuous `translateX` loop, no
+  carousel library, duplicate list `aria-hidden`, pauses on hover/focus,
+  swaps to the original static row entirely under reduced motion.
+- **Brochure vs Reality interactive comparison** — the significant one.
+  Desktop: click-anywhere-and-drag a divider between overlaid panels
+  (`clip-path` + pointer events, position driven by direct DOM refs, not
+  React state, so dragging triggers zero re-renders; container width read
+  once per drag, never inside `pointermove`). Mobile: a tap toggle instead
+  of a shrunk drag, so touch never fights vertical scroll. Full keyboard
+  support (`role="slider"`, arrow keys/Home/End, `aria-valuenow`/
+  `valuetext`, visible focus ring). Caught and fixed a real bug here too:
+  the handle/reality-layer originally had static `transform`/`clipPath`
+  values in their JSX `style` props, which React would silently reset on
+  every re-render (triggered by the mobile toggle's `setState`), undoing
+  the drag position — fixed by deriving the reality layer's clip-path from
+  the same state that drives the toggle, and keeping the handle's
+  transform purely imperative (safe because it's `display:none` whenever
+  that state changes).
+- **Optional polish, evaluated before keeping:** the hero's display type
+  scale was nudged up (desktop-only effect — the accent word now breaks
+  onto its own line) and small "01/02/03" markers were added above the
+  three sections that carry the core narrative beats. A third contrast
+  bug was caught this way too (`text-brand` at 3.45–3.69:1 on light
+  backgrounds) and fixed with `text-brand-dark`.
+
+**What this did not touch:** no dependency was added (`package.json` is
+unchanged end to end — two client components exist in the whole app,
+`NavBar` and the new `BrochureRealityCompare`); no video, WebGL, Lottie,
+GSAP or animation library; no third-party analytics; the YouTube-embedded
+testimonial pattern from the audit was deliberately not reproduced (no
+rights to real video).
+
+**Net measured effect:** +19KB transfer (199KB → 218KB), +1 request
+(11 → 12), zero change to LCP, TBT or CLS, zero net change to any
+Lighthouse category score. Full before/after detail is in §20.4's table.
