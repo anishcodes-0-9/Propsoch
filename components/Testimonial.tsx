@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { testimonial } from "@/lib/content";
 
 export default function Testimonial() {
@@ -19,10 +20,24 @@ export default function Testimonial() {
         <blockquote className="mt-6 text-xl font-semibold leading-snug text-ink sm:text-2xl lg:mt-0">
           “{testimonial.quote}”
         </blockquote>
-        <footer className="mt-5 text-sm text-muted">
-          <span className="font-semibold text-ink-soft">{testimonial.name}</span>
-          {" — "}
-          {testimonial.role}
+        <footer className="mt-5 flex items-center gap-3 text-sm text-muted">
+          <p>
+            <span className="font-semibold text-ink-soft">{testimonial.name}</span>
+            {" — "}
+            {testimonial.role}
+          </p>
+          {/* First-party Propsoch asset (see docs/PHASE4_MEDIA_LAYER_PLAN.md
+              provenance) — a quiet confirmation of the employer already
+              named in the role text above, not a "Deloitte endorses
+              Propsoch" badge. Decorative: the name is already real text. */}
+          <Image
+            src="/images/logos/deloitte.webp"
+            alt=""
+            aria-hidden="true"
+            width={358}
+            height={96}
+            className="h-3.5 w-auto shrink-0 opacity-60"
+          />
         </footer>
       </div>
     </section>
