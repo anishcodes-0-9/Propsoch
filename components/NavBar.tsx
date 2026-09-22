@@ -49,7 +49,7 @@ export default function NavBar() {
           aria-expanded={open}
           aria-controls="mobile-menu"
           onClick={() => setOpen((v) => !v)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-line text-ink md:hidden"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink md:hidden"
         >
           <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
           <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none">

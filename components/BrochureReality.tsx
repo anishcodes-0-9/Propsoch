@@ -20,15 +20,15 @@ export default function BrochureReality() {
     <section id="reality" className="py-16 sm:py-20 md:py-24">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <div className="relative lg:grid lg:grid-cols-12 lg:gap-x-8">
-          {/* Oversized section numeral — a decorative, receded (15%-opacity
-              brand) anchor bleeding slightly outside the heading's own
-              corner. Supporting typography only: the comparison widget
-              below remains the section's actual communication device. */}
-          {/* aria-hidden exempts this from screen readers, but WCAG contrast
-              still applies to anything visually rendered as text — a low
-              opacity here (tested: 15% only reaches ~1.2:1) fails axe's
-              large-text 3:1 minimum outright. 80% is the lowest opacity
-              that clears it with real margin (~3.6:1, verified below). */}
+          {/* Oversized section numeral — a decorative anchor bleeding
+              slightly outside the heading's own corner, supporting
+              typography only (the comparison widget below is the
+              section's actual communication device). aria-hidden exempts
+              it from screen readers, but WCAG contrast still applies to
+              anything visually rendered as text: a first-pass 15% opacity
+              only reached ~1.2:1 against paper and failed axe's 3:1
+              large-text minimum outright. 80% is the lowest opacity that
+              clears it with real margin (~3.6:1). */}
           <span
             aria-hidden="true"
             className="pointer-events-none absolute -left-1 -top-9 select-none text-[clamp(3.75rem,3rem+3vw,6rem)] font-extrabold leading-none text-brand-dark/80 sm:-top-11 lg:-top-14"
