@@ -1010,3 +1010,117 @@ whether those decisions actually improved the experience.
 
 That is the standard we should hold the implementation to throughout the
 assessment.
+
+---
+
+# 20. Implementation Summary (Part 2 & 3)
+
+The build is implemented in `app/`, `components/` and `lib/content.ts`,
+following the architecture in Section 11. This section documents what was
+actually built, the decisions made along the way, and the measured result
+against the Section 3 baseline.
+
+## 20.1 What was built
+
+- **Hero (redesigned)** — headline, value proposition and a single primary
+  CTA answer "what is Propsoch / why should I care / what do I do next" in
+  the first viewport on both mobile and desktop. The supporting visual is an
+  original illustration (see 20.2), not the original site's photography.
+- **Brochure vs Reality** — rebuilt as a CSS-only comparison (no drag
+  slider, no JS library): side-by-side on desktop, stacked on mobile, with
+  distinct visual treatment for each side (muted/hatched "Brochure" panel
+  vs. bordered, tinted "Reality" panel) so it reads as a real contrast
+  rather than two plain cards.
+- **25-Day Journey** — a responsive timeline (vertical with a connecting
+  line on mobile, horizontal on large screens), built with the real staged
+  copy from the live site (Today → Week 1 → Week 2 → Week 3 → Last Week).
+- **Trust bar, testimonial, final CTA, footer, nav** — minimal supporting
+  sections using verified copy/stats from the live site (client names,
+  700+/2,500+/8,500+/290+ stats, the Roshik Shenoy / Deloitte quote). No
+  invented claims, statistics or testimonials.
+
+## 20.2 Image strategy
+
+No stock photography and no scraped assets from propsoch.com were used.
+The hero visual and the Brochure vs Reality panels are original CSS/SVG
+compositions (a "glossy brochure" card vs. a "verified reality check" card
+with a magnifying-glass motif) that directly illustrate the core value
+proposition — investigate before you trust the sales pitch — rather than
+decorative photography. This was a deliberate trade-off: it keeps every
+visual on-brand and license-clean, and it means the largest visual on the
+page costs zero image bytes. The only generated raster asset is a 505-byte
+on-brand PNG app icon (`app/icon.tsx`, built with `next/og`), replacing the
+default Next.js favicon.
+
+## 20.3 Accessibility
+
+Implemented alongside each component, then verified rather than assumed:
+
+- Semantic landmarks (`header`/`nav`, `main`, `section[aria-label]`,
+  `footer`), one `h1`, logical heading order.
+- Full keyboard operability, including the mobile nav disclosure
+  (Tab → Enter opens it, Escape closes it — tested programmatically, not
+  just by inspection).
+- Every color pair actually in use was checked against WCAG AA with a
+  contrast calculator, then verified with an automated `axe-core` scan
+  (0 violations, `wcag2a`/`wcag2aa`/`wcag21aa`, both with the mobile menu
+  closed and open). The scan caught three real failures the first pass
+  missed — white text on the base brand orange (3.45–3.69:1) — which is
+  why buttons/badges use the darker `brand-dark` token (5.34:1+) and the
+  lighter orange is reserved for icon-only, non-text circles.
+- `prefers-reduced-motion` is respected globally; there is no
+  scroll-linked or decorative animation to begin with.
+
+## 20.4 Performance
+
+Server components throughout except `NavBar` (the only "use client",
+for the mobile menu toggle). No animation library, no third-party scripts,
+no image CDN — self-hosted variable font via `next/font`, CSS-only
+interactions and transitions. Total page transfer on a production build is
+~223 KB across 11 requests.
+
+### Lighthouse: before vs. after
+
+Baseline is the Section 3 PageSpeed Insights data for the live site. "After"
+is Lighthouse run locally against a production (`next build` + `next start`)
+build — a lab measurement, not a field measurement, so it isn't directly
+the same methodology as PSI's field data; PSI on the deployed URL is the
+number that should be quoted going forward, and this table should be
+refreshed once that's available.
+
+**Mobile**
+
+| Metric | Before | After |
+|---|---|---|
+| Performance | 43 | **99** |
+| Accessibility | 84 | **100** |
+| Best Practices | 100 | 100 |
+| SEO | 100 | 100 |
+| LCP | 5.9s | **2.3s** |
+| TBT | 1,750ms | **50ms** |
+| Speed Index | 8.4s | **1.1s** |
+| CLS | 0 | 0 |
+
+**Desktop**
+
+| Metric | Before | After |
+|---|---|---|
+| Performance | 57 | **100** |
+| Accessibility | 80 | **100** |
+| Best Practices | 100 | 100 |
+| SEO | 92 | **100** |
+| LCP | 1.7s | **0.5s** |
+| TBT | 1,570ms | **0ms** |
+| Speed Index | 2.7s | **0.3s** |
+| CLS | 0.001 | 0 |
+
+## 20.5 What's intentionally unchanged from the plan
+
+The original site's JS drag-to-compare slider was replaced with a CSS-only
+composition per Section 4.3/4.1 (JS and image weight were the two biggest
+baseline problems). No animation or comparison-slider library was added.
+
+## 20.6 Deployed site
+
+_Deployed URL: TBD — see repository for local run instructions
+(`npm install && npm run dev`)._
