@@ -106,8 +106,16 @@ export default function Hero() {
     <section className="mx-auto max-w-6xl px-5 pt-10 pb-14 sm:px-8 md:pt-14 md:pb-20 lg:pt-20">
       <div className="grid items-center gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14">
         <div>
-          <span className="inline-flex items-center rounded-full bg-brand-tint px-3 py-1 text-xs font-semibold text-brand-dark">
-            {hero.eyebrow}
+          <span
+            role="group"
+            className="grid items-center rounded-full bg-brand-tint px-3 py-1 text-xs font-semibold text-brand-dark"
+            aria-label={hero.eyebrowRotation.join(" — ")}
+          >
+            {hero.eyebrowRotation.map((phrase) => (
+              <span key={phrase} className="eyebrow-phrase whitespace-nowrap" aria-hidden="true">
+                {phrase}
+              </span>
+            ))}
           </span>
 
           <h1 className="mt-4 text-display font-extrabold leading-[1.05] tracking-tight text-ink">

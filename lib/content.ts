@@ -13,7 +13,14 @@ export const nav = {
 };
 
 export const hero = {
-  eyebrow: "Independent home buying research",
+  // First entry is what renders with no JS / prefers-reduced-motion; the
+  // other two cycle in on top of it. Echoes the live site's own rotating
+  // pain-point framing ("Sales Pitch? Fake Claims? Half Info?") in our voice.
+  eyebrowRotation: [
+    "Independent home buying research",
+    "No broker sales pitch",
+    "No fake claims. No half info.",
+  ],
   headline: "Before you trust the sales pitch, see the reality.",
   subhead:
     "Propsoch is a research-led home buying platform. Instead of a broker's brochure, you get verified site visits, an 80-point property report and a trained advisor working for you — not the builder.",
