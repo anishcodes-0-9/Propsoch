@@ -1,5 +1,21 @@
 import { hero } from "@/lib/content";
 
+// Splits a single word out of `text` and wraps it in the serif-italic accent
+// face. Sparing by design — this is the only accent treatment in the Hero.
+function AccentWord({ text, accent }: { text: string; accent: string }) {
+  const index = text.indexOf(accent);
+  if (index === -1) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, index)}
+      <em className="font-accent font-normal italic text-brand-dark">
+        {accent}
+      </em>
+      {text.slice(index + accent.length)}
+    </>
+  );
+}
+
 function CheckRow({ label }: { label: string }) {
   return (
     <li className="flex items-center gap-2.5 text-[13px] font-medium text-ink-soft">
@@ -95,7 +111,7 @@ export default function Hero() {
           </span>
 
           <h1 className="mt-4 text-display font-extrabold leading-[1.05] tracking-tight text-ink">
-            {hero.headline}
+            <AccentWord text={hero.headline} accent="reality" />
           </h1>
 
           <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft sm:text-lg">
