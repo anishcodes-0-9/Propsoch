@@ -19,30 +19,21 @@ export default function BrochureReality() {
   return (
     <section id="reality" className="py-16 sm:py-20 md:py-24">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <div className="relative lg:grid lg:grid-cols-12 lg:gap-x-8">
-          {/* Oversized section numeral — a decorative anchor bleeding
-              slightly outside the heading's own corner, supporting
-              typography only (the comparison widget below is the
-              section's actual communication device). aria-hidden exempts
-              it from screen readers, but WCAG contrast still applies to
-              anything visually rendered as text: a first-pass 15% opacity
-              only reached ~1.2:1 against paper and failed axe's 3:1
-              large-text minimum outright. 80% is the lowest opacity that
-              clears it with real margin (~3.6:1). */}
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute -left-1 -top-9 select-none text-[clamp(3.75rem,3rem+3vw,6rem)] font-extrabold leading-none text-brand-dark/80 sm:-top-11 lg:-top-14"
-          >
-            01
-          </span>
-
-          <div className="relative lg:col-span-7">
-            <h2 className="text-h2 font-extrabold tracking-tight text-ink">
+        <div className="lg:grid lg:grid-cols-12 lg:gap-x-8">
+          {/* Marker shrunk from a large decorative background numeral to an
+              inline editorial tag — matching Journey's "02" and Final CTA's
+              "03" — so the comparison widget below, not the numeral, carries
+              the section's visual weight. */}
+          <div className="lg:col-span-7">
+            <p aria-hidden="true" className="text-xs font-bold tracking-tight text-brand-dark">
+              01
+            </p>
+            <h2 className="mt-2 text-h2 font-extrabold tracking-tight text-ink">
               <AccentWord text={brochureReality.heading} accent="reality" />
             </h2>
           </div>
 
-          <div className="relative mt-4 lg:col-span-4 lg:col-start-9 lg:mt-0 lg:self-end">
+          <div className="mt-4 lg:col-span-4 lg:col-start-9 lg:mt-0 lg:self-end">
             <p className="text-base leading-relaxed text-ink-soft">
               {brochureReality.copy}
             </p>

@@ -1,7 +1,24 @@
 "use client";
 
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { brochureReality } from "@/lib/content";
+
+// Propsoch's own product-page master-plan pair (first-party CDN assets,
+// see docs/PHASE4_MEDIA_LAYER_PLAN.md for provenance/licensing notes):
+// the glossy 3D amenity render buyers see in sales material, versus
+// Propsoch's own annotated technical plan flagging what it doesn't show.
+const BROCHURE_IMAGE = {
+  src: "/images/comparison-brochure.webp",
+  alt: "Glossy 3D rendered site masterplan showing tower blocks, amenities and landscaping — the kind of render shown in sales material.",
+};
+const REALITY_IMAGE = {
+  src: "/images/comparison-reality.webp",
+  alt: "Propsoch's annotated technical site plan for the same project, flagging a transformer yard, a high-tension line, an unsanctioned area and a water treatment plant near the towers.",
+};
+// Native asset ratio (~988:687) — not a forced 16:9, and the ceiling the
+// two images actually render at (see the performance note in the plan doc).
+const IMAGE_RATIO = "988 / 687";
 
 const MIN = 0;
 const MAX = 100;
@@ -155,45 +172,57 @@ export default function BrochureRealityCompare() {
 
   return (
     <div>
+      {/* The interactive comparison is images only — no text lives inside
+          the clipped layers. Both panels previously placed their label at
+          the same coordinates, so once the boundary swept past roughly the
+          panel's midpoint the two labels/point-lists visibly spliced into
+          each other (found during drag testing, e.g. "REALCHURE"). Corner
+          tags now sit at opposite corners (reality top-left, since that's
+          the side revealed first; brochure top-right, the side it recedes
+          from last) so they never occupy the same pixels regardless of
+          split position. Full captions/points move to a static block below
+          that's always fully visible — see the two-column section after
+          this widget. */}
       <div
         ref={containerRef}
         onPointerDown={onPointerDown}
-        className="relative grid overflow-hidden md:cursor-ew-resize"
+        className="relative w-full overflow-hidden md:cursor-ew-resize"
+        style={{ aspectRatio: IMAGE_RATIO }}
       >
-        {/* Brochure layer — bottom, always full. Label is running type, not
-            a badge — bolder/larger than a caption so which side is which
-            reads instantly without needing chrome to carry the meaning. */}
-        <div className="relative col-start-1 row-start-1 overflow-hidden bg-[repeating-linear-gradient(135deg,var(--color-line)_0px,var(--color-line)_1px,transparent_1px,transparent_14px)] bg-paper-raised p-7 sm:p-10 lg:p-14">
-          <span className="text-base font-extrabold uppercase tracking-wide text-ink sm:text-lg">
+        {/* Brochure layer — bottom, always full */}
+        <div className="absolute inset-0">
+          <Image
+            src={BROCHURE_IMAGE.src}
+            alt={BROCHURE_IMAGE.alt}
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+          <span className="absolute top-4 right-4 rounded-full bg-paper-raised/95 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wide text-ink shadow-sm sm:top-5 sm:right-5">
             {brochureReality.brochure.label}
           </span>
-          <p className="mt-2 text-sm font-medium text-muted">{brochureReality.brochure.caption}</p>
-          <ul className="mt-6 space-y-3.5">
-            {brochureReality.brochure.points.map((point) => (
-              <XRow key={point} label={point} />
-            ))}
-          </ul>
         </div>
 
         {/* Reality layer — top, clipped to the current split */}
         <div
           ref={realityLayerRef}
-          className="relative col-start-1 row-start-1 overflow-hidden border-l-2 border-brand bg-brand-tint p-7 transition-[clip-path] duration-200 ease-out sm:p-10 lg:p-14"
+          className="absolute inset-0 border-l-2 border-brand bg-paper-raised transition-[clip-path] duration-200 ease-out"
           // Bound to `mobileSplit` (not a fixed constant) so a re-render
           // never resets this back to a stale value — see onMobileToggle.
           // On desktop, mobileSplit never changes, so this stays inert while
           // paint() drives the value imperatively during drag.
           style={{ clipPath: `inset(0 ${100 - mobileSplit}% 0 0)` }}
         >
-          <span className="text-base font-extrabold uppercase tracking-wide text-brand-dark sm:text-lg">
+          <Image
+            src={REALITY_IMAGE.src}
+            alt={REALITY_IMAGE.alt}
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+          <span className="absolute top-4 left-4 rounded-full bg-brand-dark/95 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wide text-white shadow-sm sm:top-5 sm:left-5">
             {brochureReality.reality.label}
           </span>
-          <p className="mt-2 text-sm font-medium text-brand-dark">{brochureReality.reality.caption}</p>
-          <ul className="mt-6 space-y-3.5">
-            {brochureReality.reality.points.map((point) => (
-              <CheckRow key={point} label={point} />
-            ))}
-          </ul>
         </div>
 
         {/* Drag handle — desktop only; hidden from mobile's tab order entirely */}
@@ -260,6 +289,35 @@ export default function BrochureRealityCompare() {
         >
           {brochureReality.reality.label}
         </button>
+      </div>
+
+      {/* Static supporting detail — never clipped, always fully visible for
+          both sides regardless of where the slider sits, so nothing is
+          gated behind the drag interaction and there's no shared-coordinate
+          text to splice. */}
+      <div className="mx-auto max-w-6xl px-5 pt-10 sm:px-8 sm:pt-12 lg:grid lg:grid-cols-2 lg:gap-x-12 lg:pt-14">
+        <div>
+          <span className="text-base font-extrabold uppercase tracking-wide text-ink sm:text-lg">
+            {brochureReality.brochure.label}
+          </span>
+          <p className="mt-2 text-sm font-medium text-muted">{brochureReality.brochure.caption}</p>
+          <ul className="mt-6 space-y-3.5">
+            {brochureReality.brochure.points.map((point) => (
+              <XRow key={point} label={point} />
+            ))}
+          </ul>
+        </div>
+        <div className="mt-10 lg:mt-0">
+          <span className="text-base font-extrabold uppercase tracking-wide text-brand-dark sm:text-lg">
+            {brochureReality.reality.label}
+          </span>
+          <p className="mt-2 text-sm font-medium text-brand-dark">{brochureReality.reality.caption}</p>
+          <ul className="mt-6 space-y-3.5">
+            {brochureReality.reality.points.map((point) => (
+              <CheckRow key={point} label={point} />
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
