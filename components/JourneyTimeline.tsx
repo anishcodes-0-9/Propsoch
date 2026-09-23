@@ -242,7 +242,7 @@ export default function JourneyTimeline() {
         <div className="lg:grid lg:grid-cols-12 lg:gap-x-8">
           <div className="lg:col-span-7">
             <p aria-hidden="true" className="text-xs font-bold tracking-tight text-brand-dark">
-              02
+              03
             </p>
             <h2 className="mt-2 text-h2 font-extrabold tracking-tight text-ink">
               {journey.heading}
