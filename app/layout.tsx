@@ -19,7 +19,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://propsoch-redesign.vercel.app"),
+  metadataBase: new URL("https://propsoch-chi.vercel.app"),
   title: "Propsoch | Independent Research Before You Buy a Home",
   description:
     "Propsoch helps homebuyers investigate a property before trusting a broker's sales pitch — guided research, site visits and negotiation support across a 25-day journey.",
