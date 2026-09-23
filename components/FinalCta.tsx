@@ -30,7 +30,7 @@ export default function FinalCta() {
         <div className="lg:grid lg:grid-cols-12 lg:items-center lg:gap-x-8">
           <div className="lg:col-span-7">
             <p aria-hidden="true" className="text-xs font-bold tracking-tight text-brand">
-              03
+              05
             </p>
             <h2 className="mt-2 text-h2 font-extrabold tracking-tight text-white">
               <AccentFigure text={finalCta.heading} accent="~₹4.78L" />
