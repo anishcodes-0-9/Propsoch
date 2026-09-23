@@ -1805,4 +1805,244 @@ build:
 - Lighthouse: **Mobile 97/100/100/100, Desktop 100/100/100/100** — full
   numbers in §22.10's table above
 
-No further deployment steps outstanding.
+No further deployment steps outstanding, as of the Phase 4–5 checkpoint.
+§23 below is a later, separate phase that substantially extends the page.
+
+# 23. Phase 6 — Full Product Restoration (2026-09-23)
+
+## 23.1 Why this phase happened
+
+After Phase 4–5 shipped, a direct side-by-side review against production
+propsoch.com (rendered with Playwright, not just read as static HTML —
+several of the sections below only populate via client JS on
+production) found that the Phase 3–5 redesign, in pursuit of a tight,
+defensible page, had also quietly dropped several sections that carry
+real product narrative and credibility weight on production:
+
+- A full 9-dimension (vs. local brokers) / 5-dimension (vs. online
+  portals) "How are we different?" comparison — reduced in the
+  redesign to 4 generic bullets per side inside Brochure vs Reality.
+- 3 of 4 named, real testimonials (only one static quote remained).
+- The "Featured in India's top media" section — entirely absent.
+- The FAQ — entirely absent.
+- A footer with only a copyright line and two legal links, vs.
+  production's legal-entity block, RERA registration numbers and
+  navigation columns.
+
+This section documents that audit and what was rebuilt, in the same
+evidence-over-assumption discipline as Phase 4–5: everything below was
+pulled directly from a live render of propsoch.com (Playwright, with
+category tabs clicked and accordions expanded — the DOM at rest does
+not contain this content, see §23.4), not written from memory or
+inferred from typical real-estate-site patterns.
+
+## 23.2 "How are we different?" (`Differentiators.tsx`)
+
+Production content, verified 2026-09-23: a 9-row table (Sales
+Practices → Advisor) when compared against local brokers, and a
+**different** 5-row table (Information Depth → Data Sources) when
+compared against online portals — two distinct row sets behind a mode
+toggle, not one table with a relabeled competitor column. Both are
+reproduced verbatim in `lib/content.ts`.
+
+Rebuilt as an editorial instrument in the Hero/Journey/Comparison
+visual family (FIG. 06 — DIFFERENTIATION): a large serif numeral and
+dimension name track whichever row is active; a thin brand-colored
+marker line runs down the left edge of the active row. Row activation
+is driven by one shared `active` index reachable three ways —
+`onPointerEnter` (mouse/pen only, gated the same way Comparison's
+pointer-follow is), `onClick`/`onFocus` (touch and keyboard both land
+here), and `ArrowUp`/`ArrowDown`/`Home`/`End` on the container. All 9
+(or 5) rows' full content is real DOM at all times — activation is a
+className change, never a mount/unmount — so the section is fully
+crawlable and works with CSS/JS both off.
+
+**A real bug caught before shipping**: the first pass "quieted" the
+non-active answer column with `opacity-60`/`opacity-40` — the exact
+same mistake `Marquee.tsx` already made once this project (documented
+in that file's own comments) and had to fix. axe caught it again here
+(27 flagged nodes, `color-contrast`, serious). Fixed the same way:
+quieting is conveyed by border color/weight only now, never by
+dimming real informational text below contrast minimums. The large
+decorative numeral (aria-hidden, its value duplicated in real
+accessible text beside it) was also flagged — rather than relying on
+an arguable "decorative text" exemption, its color was moved from
+`brand-soft` (1.12:1) to `brand` (3.45:1, clears the 3:1 large-text
+threshold) since this project's standing bar is 0 violations, not 0
+violations-we-can-argue-around.
+
+## 23.3 Real Stories (`RealStories.tsx`)
+
+Production has 4 named, real testimonials, not 1: Bharat Singh & Neerja
+Ahuja (text quote + video), Dr. Ankita Srivastava (video only, no
+published text quote), D.L. Narasimham (video only), and Roshik Shenoy
+(text quote only, the one the previous redesign kept). Inventing quotes
+for the two video-only people would be fabricating a claim, so they
+render as video-only cards — real content, not padded-out copy.
+
+**A real mistake caught before shipping**: the first pass paired each
+person's name with a video ID by trusting production's own
+`alt="Thumbnail for testimonial from X"` attributes read out of the
+DOM. Before wiring up the brief's specified video ID
+(`OZMT9fgbH_c`) as "Bharat Singh's video," the actual thumbnail image
+was fetched and looked at directly — it shows D.L. Narasimham, not
+Bharat Singh. Cross-checked against YouTube's oEmbed API for all three
+IDs to get the real mapping (`Nid3XKVEApg` = "Meet Bharath & Neerja" per
+its own oEmbed title; `XrsfHS7tCN0`'s thumbnail reads "Ankita &
+Vishal"; `OZMT9fgbH_c` is Narasimham's). The brief's specified video ID
+is used, correctly attributed to the person it actually belongs to.
+
+Video loading: a self-authored facade (play button, name, quote, FIG.
+04 — STORIES caption) over a static poster image until explicitly
+activated. The poster is YouTube's own public thumbnail CDN
+(`img.youtube.com`) — the standard "lite embed" pattern, a single small
+image request, not the player. No iframe, no YouTube player JS, and no
+request heavier than that poster exists before a click or
+Enter/Space activation; the eventual embed uses `youtube-nocookie.com`.
+Switching between the 4 people always drops back to the facade first —
+only one video is ever mounted.
+
+## 23.4 Featured In (`FeaturedIn.tsx`)
+
+Production's media-wall images carry no `alt` text or discoverable
+publication names in the DOM — the only way to get the real list was
+to screenshot the section and read it visually: ThePrint, The Times of
+India, CNBC, ANI, The Economic Times, Outlook Business, Inc42, mint,
+The Hindu, Business Standard, RealtyNXT.
+
+No publication mastheads/logos are reproduced — self-authored text
+cards only, each with a small static per-card rotation (a design
+choice, not motion, so it needs no reduced-motion override) for the
+editorial "clipping wall" feel, and a hover/focus lift on an inner box
+(the same "compose transforms on separate boxes" pattern Marquee's
+logo hover already established) that straightens and lifts the card.
+Mobile: a horizontally scrollable row with an intentionally partial
+final card, matching the "swipe for more" affordance production's own
+(differently-implemented) media wall uses.
+
+## 23.5 FAQ (`Faq.tsx`)
+
+Production's FAQ has 4 categories (About the Service, Fees, Why Work
+With Us, Trust) and ~30 real questions, pulled directly from the DOM by
+clicking every category tab and every accordion trigger (recorded via
+Playwright, not summarized) — a curated 16-question subset (4 per
+category), verbatim question and answer text, is used here to keep the
+section readable rather than reproducing all 30.
+
+**A genuine production gap found during this research, not assumed**:
+propsoch.com's FAQ answers are only mounted into the DOM once a Radix
+accordion item is opened client-side — checked directly by fetching the
+raw HTML: closed items render as empty `<div hidden>` content panels.
+Production's own FAQ is therefore not actually crawlable, despite
+looking like an ordinary accordion.
+
+This implementation uses native `<details>`/`<summary>` specifically to
+avoid that: every answer is real, server-rendered text in the initial
+HTML — confirmed with a plain `curl` against the production build,
+no JS execution, no Playwright — regardless of whether that item is
+open or closed. Keyboard support (`Enter`/`Space` on `<summary>`),
+focus-visibility and the open/close icon rotation all come from native
+semantics, no custom ARIA pattern to get right. A `FAQPage` JSON-LD
+block (`application/ld+json`) mirrors the same real content for search
+result rich snippets — accurate because it's the same verbatim text
+already on the page, not a separate invented claim.
+
+## 23.6 Footer (`Footer.tsx`)
+
+Rebuilt from production's real footer structure (checked 2026-09-23):
+the legal-entity block (Thinkr Proptech Private Limited, GSTIN, CIN,
+both state RERA registration numbers linked to the actual
+rera.karnataka.gov.in / maharera.maharashtra.gov.in verification
+pages), a closing statement + CTA, and navigation columns.
+
+Two things deliberately **not** carried over: production's own nav
+columns (Top Developers / Top Areas / Top Filters) link to a property
+search backend this redesign doesn't have, so they're replaced with
+real anchors to this page's own sections instead of dead or
+out-of-scope links. And the GSTIN/CIN strings are reproduced exactly
+as displayed on production — they don't parse as standard-format
+Indian GSTIN/CIN numbers, which is noted here rather than silently
+"corrected" into something that looks more valid but isn't verified.
+The two RERA numbers, unlike those, link to live government portals
+and are independently checkable.
+
+## 23.7 Information architecture (final)
+
+```
+NAV
+HERO                — Why should I question the broker?
+TRUST                — Can I trust these people?
+HOW ARE WE DIFFERENT — Why choose Propsoch specifically, not just "trust us"?
+BROCHURE VS REALITY  — What does Propsoch actually investigate?
+25-DAY JOURNEY        — What happens after I start, and when?
+REAL STORIES          — Did real buyers benefit, in their own words?
+FEATURED IN            — Does the outside world recognize them?
+FINAL CTA              — What should I do now?
+FAQ                    — What objections remain unanswered?
+FOOTER                  — Where can I go next, and who is this, legally?
+```
+
+Section numerals renumber to match this order (01 How We Differ, 02
+Brochure vs Reality, 03 Journey, 04 Real Stories, 05 Final CTA); Trust,
+Featured In and FAQ stay unnumbered credibility strips, consistent with
+Trust's pre-existing unnumbered treatment. The FIG. plate system
+extends as planned: FIG. 01 Investigation (Hero), FIG. 02 Evidence
+(Journey), FIG. 03 Reality (Comparison), FIG. 04 Stories (Real
+Stories' video facade), FIG. 05 Proof (Featured In), and FIG. 06
+Differentiation (the new comparison instrument) — a natural extension
+beyond the brief's five, in the same family.
+
+## 23.8 Validation
+
+Full-page axe (`wcag2a`/`wcag2aa`/`wcag21aa`): **0 violations** after
+the two contrast fixes in §23.2. 0 console errors, 0 failed/4xx/5xx
+requests. 0px horizontal overflow at all 8 required widths (320, 375,
+390, 768, 1024, 1280, 1440, 1920). Keyboard-tested directly: arrow
+keys/Home/End move the Differentiators active row; Enter/Space opens
+FAQ items and activates the video facade; all interactive elements
+reachable and visibly focused via `:focus-visible`. FAQ crawlability
+verified with a plain `curl` against the production build (no JS) —
+all 16 answers present in the raw HTML.
+
+Lighthouse, production build (`next build && next start`), same
+methodology as §22.9:
+
+| | Mobile | Desktop |
+|---|---|---|
+| Performance | 97 | 100 |
+| Accessibility | 100 | 100 |
+| Best Practices | 100 | 100 |
+| SEO | 100 | 100 |
+| LCP | 2.4s | 0.5s |
+| TBT | 80ms | 0ms |
+| CLS | 0 | 0 |
+| Total transfer | 230 KiB | 230 KiB |
+
+Total transfer moved from 213 KiB to 230 KiB while adding roughly
+2,000 words of real content and 4 new sections — no new images, no
+animation library, no new third-party JS. The one deliberate exception
+is a small `<img>` (not `next/image`) for the video facade's poster,
+pointed at YouTube's own public thumbnail CDN; it's lazy-loaded,
+below the fold, and not the LCP element. A first back-to-back
+mobile+desktop run showed Mobile Performance at 77 with TBT at 820ms —
+investigated rather than accepted, per the hard-gate instruction for
+this phase; 33 stray Node/Chrome processes left over from earlier test
+runs were the cause (confirmed by killing them and re-running in
+isolation, which reproduced the clean 97/98 result above), not a
+regression from this phase's changes.
+
+Also added this phase, per the SEO/crawlability requirements: real
+`app/robots.ts` and `app/sitemap.ts` metadata routes, a canonical URL,
+Twitter Card metadata, and a `FAQPage` JSON-LD block whose content is
+the same verbatim FAQ text already server-rendered on the page.
+
+## 23.9 What deliberately wasn't added
+
+No video autoplays or loads on initial page load. No stock photography.
+No animation library — the pointer-follow, keyboard-nav and reveal
+interactions are all `useState` + CSS transitions/transforms, the same
+approach as Phase 4–5's Comparison and Journey. No scroll-hijacking. No
+new client components beyond what each interaction genuinely needs
+(`Differentiators` and `RealStories` are client components;
+`FeaturedIn` and `Faq` are plain server components — their
+interactivity is native HTML, not React state).
