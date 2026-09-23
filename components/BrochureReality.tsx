@@ -26,7 +26,7 @@ export default function BrochureReality() {
               the section's visual weight. */}
           <div className="lg:col-span-7">
             <p aria-hidden="true" className="text-xs font-bold tracking-tight text-brand-dark">
-              01
+              02
             </p>
             <h2 className="mt-2 text-h2 font-extrabold tracking-tight text-ink">
               <AccentWord text={brochureReality.heading} accent="reality" />
