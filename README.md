@@ -2046,3 +2046,28 @@ new client components beyond what each interaction genuinely needs
 (`Differentiators` and `RealStories` are client components;
 `FeaturedIn` and `Faq` are plain server components — their
 interactivity is native HTML, not React state).
+
+## 23.10 Deployment (this phase)
+
+Pushed to `origin/main` and deployed to the same live URL as before —
+[propsoch-chi.vercel.app](https://propsoch-chi.vercel.app) — aliased
+from this phase's Vercel deployment. Verified directly against that
+URL, not assumed from the local build:
+
+- HTTP 200, correct `<title>`, all ten sections present in the final
+  order (§23.7)
+- **One `<img>` tag on the whole deployed page** — the RealStories
+  video facade's poster; everything else remains SVG/CSS/typography
+- `FAQPage` JSON-LD present, `robots.txt` and `sitemap.xml` both live
+- 0 axe violations (full page), 0 console errors, 0 failed/4xx/5xx
+  requests
+- 0px horizontal overflow at 390, 1440 and 1920
+- Lighthouse: **Mobile 95/100/100/100** (LCP 2.3s, TBT 50ms), **Desktop
+  100/100/100/100** (LCP 0.5s, TBT 0ms) — mobile sits right at this
+  phase's ≥95 gate rather than the local build's 97; the gap is real
+  network/edge latency versus a local loopback (the same pattern noted
+  for the Phase 4–5 deployment in §22.10), not a regression — SEO,
+  accessibility and best practices all still land at 100, and CLS is
+  still 0.
+
+No further deployment steps outstanding.
