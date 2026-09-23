@@ -12,6 +12,18 @@
 
 # testing
 /coverage
+/playwright-report
+/test-results
+
+# audit / QA artifacts produced during local development
+*.lighthouse.json
+lighthouse-report*
+/screenshots
+
+# editor / IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
 
 # next.js
 /.next/
