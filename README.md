@@ -1511,7 +1511,7 @@ Checked against the repository directly, not assumed:
 | Two additional original sections rebuilt | Done | Brochure vs Reality + 25-Day Journey (§7, §21.3) |
 | Desktop responsive | Done | §21.8; verified 1024/1280/1440 |
 | Mobile responsive | Done | §21.8; verified 320/375/390/768 |
-| Optimized images/assets | Done, by a documented alternative | Zero raster/vector image files in the repo at any point (verified by search); see §20.2/§21.4 for the reasoning |
+| Optimized images/assets | Done, by a documented alternative | Zero raster image files in the repo — self-authored SVG throughout; see §22 for the full media-layer and licensing history (this claim was briefly false mid-project when real propsoch.com assets were used, then reversed — §22.5) |
 | Next.js | Done | `next@16.3.5`, App Router |
 | TypeScript | Done | `tsc --noEmit` passes clean |
 | Tailwind CSS | Done | Tailwind v4, CSS-based `@theme` config |
@@ -1519,21 +1519,268 @@ Checked against the repository directly, not assumed:
 | Lighthouse baseline documented | Done | §3, sourced from PageSpeed Insights against the live site |
 | Five UX/UI issues documented | Done | §5 |
 | Explanation of how each issue was addressed | Done | §5 "Fix" subsections, cross-referenced against the actual implementation in §20/§21 |
-| Before/after performance evidence | Done | §21.7 |
+| Before/after performance evidence | Done | §21.7 (Phase 3), §22.9 (final, supersedes it) |
 | GitHub repository | Done | this repository |
-| Deployed site | **Not done** | see §21.10 |
-
-The only unmet item is deployment, which is a genuine gap, not a
-documentation omission — see §21.10 for exactly what's outstanding.
+| Deployed site | Done | §22.11 |
 
 ## 21.10 Deployment status
 
-**Not yet deployed.** This requires a decision the repository itself
-can't make — a Vercel (or equivalent) account to deploy under — and
-was flagged as outstanding earlier in the project. Locally, `npm run
-build && npm run start` reproduces the exact production build every
-Lighthouse number in this README was measured against. Once deployed,
-the two remaining steps are: (1) run PageSpeed Insights against the
-live URL for a real field-data comparison against §3's baseline, and
-(2) add the deployed URL here and to the repository description, per
-the assignment's submission requirement.
+Superseded by §22.11 — deployed after this section was originally
+written. Left in place as a historical record of project state at the
+end of Phase 3, before Phase 4/5's media layer and final ship.
+
+# 22. Phase 4–5 — Media Layer, Final Redesign & Ship (2026-09-23)
+
+Phase 3 (§21) closed the page's structural/editorial pass. This phase
+covers everything since: the media layer (Hero, Journey, Comparison
+visuals), two rounds of design-direction correction, a licensing
+question that changed what those visuals are actually made of, and the
+final ship. Written as the same evidence chain as the rest of this
+document — production problem → evidence → decision → implementation →
+validation — because that chain is what the rest of this README has
+been arguing for as the right way to justify a design decision, and
+this phase should be held to it too.
+
+## 22.1 Why this phase happened
+
+Phase 3 left Hero, Journey, and Comparison structurally strong but
+visually thin — typography and hairline rules doing all the work, no
+imagery anywhere. A staff-engineer-style review of the deployed-so-far
+work against propsoch.com production and two design references
+(Coperni, Les Grandes Serres de Pantin) concluded the page was
+optimizing for "smallest possible bundle" rather than "most defensible
+design," and that Lighthouse being high (98–100) wasn't itself evidence
+the design was strong — a real production comparison, not just clean
+CSS, was needed to check.
+
+## 22.2 Hero — final decision
+
+**First attempt (superseded):** a real Propsoch team photo, full-bleed
+behind the headline. Sourced legitimately (first-party, unwatermarked)
+but dropped after direct critique: a group photo answers "does Propsoch
+have employees," not "why should you trust this research" — it doesn't
+communicate property investigation, evidence, or verification, which is
+what the section actually needs to be about. Coperni's imagery is the
+product (clothing); Les Grandes Serres's imagery is the actual subject
+(the building). A team photo is neither.
+
+**Final decision:** a self-authored "investigative technical plate" —
+an evidence-board SVG scaled up from a small Phase 4 accent into the
+Hero's real visual anchor. Asymmetric dominant footprint bled off the
+frame edge (not centered), true dimension lines with tick ends and
+measured values, a six-point numbered index where three are
+filled-orange-and-labeled (the three real facts already in the hero
+copy: 80-point report, on-site verification, RERA registration) and
+three stay bare/neutral (density without fabricating claims), and a
+large faint "FIG. 01" plate caption. H1 stays the largest text element
+on the page; the diagram is texture and evidence, not competition for
+it.
+
+Two real bugs were caught and fixed during this build, not after:
+a negative margin meant to create "overlap with typography" instead
+covered the headline text outright (reverted); the wide desktop
+viewBox broke on mobile because HTML label chips were positioned by
+container percentage while the SVG letterboxed at a different aspect
+ratio (fixed by cropping instead of letterboxing and hiding the labels
+below `sm`, per the same "hide rather than shrink" rule already used
+elsewhere in this codebase).
+
+## 22.3 Journey — final decision
+
+**First attempt (superseded):** five real per-project master-plan
+images (from propsoch.com's own property pages), swapped per stage.
+Dropped after direct critique: none of the five corresponded
+narratively to the stage they sat behind — interchangeable decoration,
+not communication, which fails the actual test ("does the visitor
+understand the concept before reading the paragraph").
+
+**Final decision:** one shared, self-authored diagram that gets
+*more annotated* as the stage advances — each layer maps directly to
+real copy already in the stage descriptions, not a new claim:
+
+| Stage | Layer added | Maps to existing copy |
+|---|---|---|
+| 1 — Today | none (bare footprint) | nothing surveyed yet |
+| 2 — Week 1 | measurement ticks, "SHORTLIST DRAFTED" | "curates 10–12 verified projects" |
+| 3 — Week 2 | site-visit marker, "SITE VISIT LOGGED" | "you see and analyse them in person" |
+| 4 — Week 3 | flagged callout, "PEACE OF MIND REPORT" | "Get your Peace of Mind report" |
+| 5 — Last week | closure seal, "DEAL CLOSED" | "help you seal the best deal" |
+
+Lines draw in via `stroke-dashoffset`, markers pop via a small scale
+transform, and a corner caption reads "FIG. 02 — EVIDENCE 0X/04,"
+incrementing with the stage — verified directly via DOM text at every
+stage, `00/04` through `04/04`. An off-by-one was caught during that
+verification (layers were appearing one stage early — "Peace of Mind
+report" showing at "Site visits" instead of "Deep dive," where the copy
+actually places it) and fixed before shipping. Motion exists only on
+the desktop shared viewport, where there's live progression to show;
+each mobile stage renders once at its own fixed state, so nothing
+animates there — a deliberate scope, not a gap.
+
+## 22.4 Comparison — final decision
+
+Kept the drag-reveal interaction model from Phase 4, but two things
+changed:
+
+- **Pointer-follow, no press required.** `pointermove` (rAF-throttled)
+  drives the split on fine-pointer devices (`event.pointerType ===
+  "mouse" | "pen"`), gated per-event rather than by media query so a
+  touchscreen — which never fires `pointermove` without contact — falls
+  through to the existing press-drag path untouched. Touch drag,
+  mobile tap-toggle, and keyboard (Home/End/Arrow) all unchanged and
+  re-verified. Confirmed directly: moving the mouse with no `mousedown`
+  at all changed the split from 35% to 75%, at both 1440px and 1920px.
+- **Contained width at `xl` (≥1280px).** Full-bleed 100vw at large
+  desktop sizes had stopped reading as "the comparison" and started
+  reading as "the whole section." Capped at `max-w-5xl` (1024px),
+  centered within the full-bleed strip — confirmed visually at 1920px
+  showing clear paper margin on both sides, plus a "FIG. 03" caption
+  (see §22.5) so the contained size reads as a deliberate plate, not a
+  shrunk leftover.
+
+## 22.5 Asset licensing — found, decided, resolved
+
+Mid-Phase-5, a check of propsoch.com's own Terms of Use (`/meta/terms`,
+§7) found it explicitly prohibits reproducing site content — including
+images — without Propsoch's written consent. At that point the Hero
+photo, the Journey images, the Comparison images, and the trust-bar
+logos were all sourced from propsoch.com's own CDN.
+
+Rather than assume the assessment context made this acceptable, the
+actual assignment brief (`Frontend Engr Task.pdf`) was read directly to
+check. It says only "Analyze the Propsoch landing page and build an
+improved version" — nothing granting rights to reproduce their site
+content, explicit or implicit. No genuine assessment-context
+authorization exists.
+
+**Resolution:** every propsoch.com-derived asset has been replaced.
+
+- Hero and Journey were already moved to self-authored SVG for
+  independent design reasons (§22.2, §22.3) before this was fully
+  resolved, which happened to close the question for those two
+  sections regardless.
+- **Comparison images** — replaced with `BrochurePanel` and
+  `RealityPanel`, two self-authored inline SVGs sharing one footprint
+  layout (same site, two lenses: soft/rounded/unannotated vs
+  sharp/outlined/measured-and-flagged), captioned "FIG. 03" to match.
+- **Trust-bar logos** — removed entirely. Every company now renders as
+  a text wordmark (the treatment already used for one company, xto10x,
+  extended to all nine) — a plain company name in text is a different
+  act from reproducing a copied logo image, and was judged lower-risk
+  on its own terms, but removed anyway for one consistent story rather
+  than two different risk tolerances in the same page.
+
+**Net effect: `public/images/` is empty. The entire page is 100%
+self-authored SVG, CSS and typography — no raster assets anywhere.**
+Full provenance history (what was sourced, why it was rejected or kept,
+and the two watermarked-render candidates that were caught and
+discarded before ever reaching the page) is in
+`docs/PHASE4_MEDIA_LAYER_PLAN.md §8`.
+
+One real bug was caught while building the Comparison replacement: the
+new panels' outer `<svg>` was missing `fill="none"` (present on the
+Hero/Journey diagrams but omitted here), so the grid pattern's
+unfilled `<path>` defaulted to solid black fill instead of a thin
+stroke, rendering as a black-and-white checkerboard instead of a subtle
+grid. Caught in a screenshot check before shipping, fixed immediately.
+
+## 22.6 Motion system
+
+Three moments, not motion everywhere, in priority order:
+
+1. **Hero eyebrow rotation** (P0) — three phrases cycling via CSS
+   `@keyframes`, unchanged since Phase 3.
+2. **Comparison pointer-follow** (P0) — §22.4.
+3. **Journey evidence accumulation** (P1) — §22.3's dash-draw/scale-pop.
+
+No scroll hijacking, no animation library — CSS transitions/transforms
+and native SVG throughout. Every transition/animation in the codebase
+collapses to ~0.01ms under `prefers-reduced-motion: reduce` via the one
+global rule in `app/globals.css`, verified directly (not assumed) for
+both the pre-existing eyebrow animation and the new Journey transitions.
+
+## 22.7 Accessibility validation (this phase)
+
+Full-page `axe-core` (wcag2a/wcag2aa/wcag21aa), run against the
+production build, after scrolling the entire page to trigger lazy
+content:
+
+- **First run after the licensing-driven asset swap: 8 violations**,
+  `color-contrast`, serious impact. Root cause: converting all trust
+  logos to text wordmarks kept the old `opacity-60` treatment, which
+  was fine for grayscale *logo images* (WCAG's logotype exception
+  covers those) but faded real text down to ~3.25:1 against white —
+  a genuine failure, not a false positive. Fixed by switching to
+  `text-muted` at full opacity (measures ~5.2:1) instead of opacity-based
+  fading — same "quiet until interacted with" look, real contrast.
+- A ninth flagged node (the Hero eyebrow phrase) was checked separately
+  under `prefers-reduced-motion` (steady state, no live animation to
+  catch mid-transition) and came back clean — confirmed as an
+  animation-timing artifact from axe sampling mid-keyframe, not a real
+  defect, before being ruled out.
+- **Final state: 0 violations, full page**, plus 0 on every earlier
+  per-section run this phase.
+
+Keyboard traversal: every interactive element (nav, both CTAs, the
+Comparison slider, footer links) reachable via Tab, every stop showing
+a visible `:focus-visible` outline — checked directly via
+`el.matches(':focus-visible')` on each of 20 tab stops, not inferred
+from CSS alone.
+
+## 22.8 Responsive validation (this phase)
+
+0px horizontal overflow confirmed at 320, 375, 390, 768, 1024, 1280,
+1440, and 1920 — the full range the project has been checked against
+since Phase 3, extended to 1920 this phase for the Comparison
+contained-width check (§22.4). Comparison pointer-follow re-verified
+working at both 1440 and 1920 specifically, since that's the exact
+breakpoint boundary the `xl:max-w-5xl` change targets.
+
+## 22.9 Performance validation — local (supersedes §21.7 for current numbers)
+
+Measured against `npm run build && npm run start` (the same production
+build the deployed site in §22.11 is built from), 2026-09-23, after the
+final licensing-driven asset swap:
+
+| Metric | Mobile | Desktop |
+|---|---|---|
+| Performance | 98 | 100 |
+| Accessibility | 100 | 100 |
+| Best Practices | 100 | 100 |
+| SEO | 100 | 100 |
+| FCP | 1.1s | 0.3s |
+| LCP | 2.4s | 0.6s |
+| TBT | 40ms | 0ms |
+| CLS | 0 | 0 |
+| Speed Index | 1.1s | 0.3s |
+| Total transfer | 213 KiB | 213 KiB |
+
+Total transfer dropped from 278 KiB to 213 KiB between the previous
+Phase 5 checkpoint and this one — removing the propsoch.com-sourced
+raster images (§22.5) reduced page weight; it wasn't a tradeoff against
+the richer visual system, the two moved together.
+
+## 22.10 Baseline vs. local vs. deployed — kept separate on purpose
+
+Per explicit instruction earlier in this project: the original baseline
+is never rewritten, and each measurement is labeled with what it
+actually measured, since PageSpeed Insights (production, real network)
+and Lighthouse CLI (local, simulated throttling) are different
+methodologies, not directly comparable apples-to-apples.
+
+| | Mobile Perf | Desktop Perf | Mobile LCP | Desktop LCP | Source | Captured |
+|---|---|---|---|---|---|---|
+| **Original baseline** | 43 | 57 | 5.9s | 1.7s | PageSpeed Insights, propsoch.com | 2026-09-22 |
+| **Local redesign (this phase)** | 98 | 100 | 2.4s | 0.6s | Lighthouse CLI, `next start`, local | 2026-09-23 |
+| **Deployed redesign** | — | — | — | — | Lighthouse CLI, live URL | see §22.11 |
+
+No overall "better/worse" verdict beyond these measured numbers — the
+methodology differs too much for that framing to mean anything
+precise. The deployed row is filled in §22.11 once real numbers exist,
+not estimated here.
+
+## 22.11 Deployment
+
+_Filled in after deployment — see the end of this document for the
+final, verified entry with the live URL, deployed Lighthouse numbers,
+and breakpoint verification._

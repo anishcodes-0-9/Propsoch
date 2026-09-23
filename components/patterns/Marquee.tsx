@@ -1,58 +1,31 @@
-import Image from "next/image";
-
-// Propsoch trust/company logos — the companies its own "Trusted by buyers
-// from" bar names (first-party CDN assets, see docs/PHASE4_MEDIA_LAYER_PLAN.md
-// for provenance) — keyed by company name so this stays independent of
-// `lib/content.ts`'s own `trust.companies` list. Intrinsic width/height are
-// each logo's real optimized-asset dimensions (next/image needs these for its
-// aspect-ratio math; the CSS below is what actually controls display size).
+// Trust-bar wordmarks — text only, no logo images. Previously used
+// first-party logo assets pulled from propsoch.com's own CDN; removed
+// after the assignment brief was checked directly and found to say
+// nothing granting rights to reproduce their site content, so there was
+// no genuine authorization to rely on (see
+// docs/PHASE4_MEDIA_LAYER_PLAN.md §8.3). Naming which companies a
+// testimonial's employer works for, in plain text, doesn't carry the
+// same reproduction question a copied logo image does.
 //
-// xto10x has no entry: the live Propsoch site's own carousel mislabels its
-// xto10x slide with NVIDIA's logo image (a bug on their end, confirmed by
-// inspecting their rendered markup — nvidia-logo.png is not used under any
-// slide actually labeled "Nvidia"). Reusing that mismatched asset here would
-// misattribute NVIDIA's mark to xto10x, so xto10x renders as a text wordmark
-// below instead of a fabricated/mismatched logo image.
-const LOGOS: Record<string, { src: string; width: number; height: number }> = {
-  Amazon: { src: "/images/logos/amazon.webp", width: 159, height: 48 },
-  Google: { src: "/images/logos/google.webp", width: 143, height: 48 },
-  Microsoft: { src: "/images/logos/microsoft.webp", width: 225, height: 48 },
-  Jupiter: { src: "/images/logos/jupiter.webp", width: 161, height: 48 },
-  Deloitte: { src: "/images/logos/deloitte.webp", width: 358, height: 96 },
-  Flipkart: { src: "/images/logos/flipkart.webp", width: 364, height: 96 },
-  Atlassian: { src: "/images/logos/atlassian.webp", width: 288, height: 96 },
-  PhonePe: { src: "/images/logos/phonepe.webp", width: 315, height: 96 },
-  Navi: { src: "/images/logos/navi.webp", width: 356, height: 96 },
-};
-
 // Grayscale/muted at rest; full color, full opacity and a small scale on
 // hover OR keyboard focus — never both a hover pause and a color change, the
 // marquee's own translateX keeps running the whole time (parent and child
 // transforms compose independently on their own boxes). tabIndex={0} makes
-// each real (non-duplicate) logo reachable so keyboard users get the same
-// state mouse users get; the duplicate half stays untabbable (img isn't
-// focusable by default, and it's already aria-hidden).
+// each real (non-duplicate) wordmark reachable so keyboard users get the same
+// state mouse users get; the duplicate half stays untabbable.
 function Logo({ name, focusable }: { name: string; focusable: boolean }) {
-  const logo = LOGOS[name];
-  if (logo) {
-    return (
-      <Image
-        src={logo.src}
-        alt={name}
-        width={logo.width}
-        height={logo.height}
-        tabIndex={focusable ? 0 : undefined}
-        className="h-6 w-auto shrink-0 grayscale opacity-60 transition-[filter,opacity,scale] duration-300 hover:scale-105 hover:opacity-100 hover:grayscale-0 focus-visible:scale-105 focus-visible:opacity-100 focus-visible:grayscale-0 sm:h-7"
-      />
-    );
-  }
-  // No legitimate logo asset exists for this company (see the LOGOS comment
-  // above) — render its name as a plain wordmark instead of a fabricated or
-  // mismatched logo image, at the same visual weight/height as its neighbors.
+  // `text-muted` at rest, not `text-ink-soft` faded via `opacity-60` — the
+  // opacity approach was inherited from when these were grayscale *logo
+  // images* (WCAG's logotype exception covers those). Once every company
+  // became real text, opacity-based fading blended it down to ~3.25:1
+  // against the section's white background — a real, caught-by-axe
+  // failure, not a false positive. `text-muted` at full opacity measures
+  // ~5.2:1 here and still reads as the same "quiet until interacted with"
+  // treatment.
   return (
     <span
       tabIndex={focusable ? 0 : undefined}
-      className="flex h-6 shrink-0 items-center text-sm font-extrabold tracking-tight text-ink-soft opacity-60 transition-[opacity,color,scale] duration-300 hover:scale-105 hover:opacity-100 hover:text-ink focus-visible:scale-105 focus-visible:opacity-100 focus-visible:text-ink sm:h-7 sm:text-base"
+      className="flex h-6 shrink-0 items-center text-sm font-extrabold tracking-tight text-muted transition-[color,scale] duration-300 hover:scale-105 hover:text-ink focus-visible:scale-105 focus-visible:text-ink sm:h-7 sm:text-base"
     >
       {name}
     </span>

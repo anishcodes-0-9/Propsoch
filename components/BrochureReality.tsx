@@ -41,11 +41,15 @@ export default function BrochureReality() {
         </div>
       </div>
 
-      {/* Full-bleed: the actual comparison, not the intro copy, carries this
-          section's visual weight. No forced aspect ratio — height follows
-          the panels' own content. */}
+      {/* Full-bleed up to `xl` — at large-desktop widths that stopped
+          reading as "the comparison" and started reading as "the whole
+          section," so the widget itself gets a contained max-width and
+          centers within the full-bleed strip once there's room to spare.
+          No forced aspect ratio — height follows the panels' own content. */}
       <div className="mt-12 ml-[calc(50%-50vw)] mr-[calc(50%-50vw)] w-screen sm:mt-14 lg:mt-16">
-        <BrochureRealityCompare />
+        <div className="xl:mx-auto xl:max-w-5xl">
+          <BrochureRealityCompare />
+        </div>
       </div>
     </section>
   );

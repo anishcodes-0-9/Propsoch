@@ -188,3 +188,158 @@ was previously empty space — a genuine Hero anchor, real trust logos,
 meaningful Brochure vs Reality imagery, a visual Journey cue, stronger
 testimonial proof — while the page still feels restrained, editorial, and
 specifically Propsoch's, not generically "media-rich."
+
+## 8. Phase 5 — Hero and Journey, revisited (2026-09-23)
+
+### 8.1 First attempt (superseded, kept here for the record)
+
+A design-direction review first led to real photographic/technical
+assets: a full site-wide crawl of propsoch.com beyond the homepage
+(property pages, About Us, Blog, Services/Resources) inventoried
+first-party imagery, and the Hero was rebuilt around a real Propsoch
+team photo (`propsoch-team-photo.png`, About Us) full-bleed behind the
+headline, with the Journey rebuilt around five real per-project
+master-plan diagrams (Assetz Atmos & Aura, Brigade Parkside North,
+Embassy Lake Terraces, Sobha Insignia, and a project listed under the
+"lodha-mirabelle" slug but displaying "The Icon Bangalore" branding — a
+mismatch on propsoch.com's own page, not introduced here), swapped per
+stage via `IntersectionObserver`. The corresponding "views-2.webp"
+photographic image for each of the five journey projects was checked
+first and rejected before landing on the master-plan versions — those
+are glossy CGI marketing renders, three of five carrying a baked-in
+"propsoch.com — Homebuying, Reimagined!" watermark, which would have
+directly contradicted this project's own Comparison-section message
+("Staged model flats and CGI renders" is a listed brochure complaint).
+
+**This was superseded on a second review** (§8.2) for two reasons found
+on inspection, not assumed in advance:
+
+1. The team photo answers "does Propsoch have employees," not "why
+   should you trust this research" — it doesn't communicate property
+   investigation, evidence, or verification, the actual subject the
+   Hero needs to be about.
+2. None of the five Journey master-plan images corresponded
+   narratively to the stage they sat behind (plan-4 wasn't "the
+   property you negotiate on" in Week 3) — interchangeable decoration,
+   not communication.
+
+Both assets are also still subject to the rights note below, which
+applied here too and was a secondary reason to move away from them.
+
+### 8.2 Course correction — self-authored evidence system
+
+Both sections now use one shared, fully self-authored visual language
+instead of sourced imagery — zero rights dependency, and each element
+maps to something the copy already says rather than decorating around
+it.
+
+**Hero — `EvidenceDiagram` (inline SVG, `components/Hero.tsx`)**
+A scaled-up version of the original Phase 4 `EvidenceBoard` motif: a
+denser cluster of five annotated site-plan footprints, measurement
+ticks, a north indicator, and the same three evidence facts as
+before (80-point report, on-site verification, RERA registration) as
+paper-backed chips over the diagram. Full-bleed band, `bg-paper-raised`
++ grid pattern in place of a photo — the Comparison section's real
+annotated-plan imagery is the actual "evidence" visual on the page;
+this is the same idea in the same visual language, not a competing one.
+
+**Journey — `JourneyDiagram` (inline SVG, `components/JourneyTimeline.tsx`)**
+One shared diagram per the desktop sticky viewport (and a static
+per-stage render on mobile) that gets **more annotated as the stage
+index increases** — each added layer maps directly to real copy already
+in `journey.stages`, not a new claim:
+
+| Stage | Layer added | Maps to |
+|---|---|---|
+| 1 — Today | none (bare footprint) | nothing surveyed yet |
+| 2 — Week 1 | measurement ticks, "SHORTLIST DRAFTED" | "curates 10–12 verified projects" |
+| 3 — Week 2 | site-visit marker, "SITE VISIT LOGGED" | "you see and analyse them in person" |
+| 4 — Week 3 | flagged callout, "PEACE OF MIND REPORT" | "Get your Peace of Mind report" |
+| 5 — Last week | closure seal, "DEAL CLOSED" | "help you seal the best deal" |
+
+The image itself now tells the story (evidence accumulates as the
+process progresses) instead of just illustrating it.
+
+**Rights note, resolved rather than accepted-as-risk:** propsoch.com's
+own Terms of Use (`/meta/terms`, §7) prohibit reproducing site content
+without written consent. §8.1's assets were used anyway as an accepted
+risk in an earlier pass; this revision removes that dependency entirely
+for Hero and Journey rather than continuing to carry it — no propsoch.com
+asset is used in either section as of this revision. The Comparison
+section's two images (`comparison-brochure.webp`/`comparison-reality.webp`)
+and the trust-bar logos are unchanged and still carry the same open
+question; that's a separate decision, not resolved by this revision.
+
+### 8.3 Outstanding licensing question — not resolved, documented instead
+
+This is a factual record, not a legal opinion — nobody on this project is
+qualified to give one, and this document doesn't try to.
+
+**What's still in use from propsoch.com:**
+- `public/images/comparison-brochure.webp` / `comparison-reality.webp` —
+  the two images in the Comparison section.
+- `public/images/logos/*.webp` — the trust-bar client logos.
+
+**What's confirmed:** propsoch.com's Terms of Use (`/meta/terms`, §7)
+prohibit copying/reproducing/redistributing site content, including
+images, without Propsoch's prior written consent. No exception for
+"assessment" or "portfolio" use is stated anywhere in that clause or
+found elsewhere on the site. Nobody involved in this project has sought
+or received written consent from Propsoch.
+
+**What's not been assumed:** whether submitting a hiring assessment to
+the same company implicitly authorizes using their assets for that
+purpose. That is not something this document, or the person writing it,
+can determine — it depends on facts (the actual assessment brief's
+wording, any communication with Propsoch, general legal principles
+around implied license) outside this codebase's ability to verify.
+
+**Two paths, neither taken yet:**
+
+- **A — proceed under assessment-context authorization.** Only valid if
+  that authorization is actually real, not assumed. Needs a human
+  decision, not a default.
+- **B — replace with self-authored equivalents.** Concretely: extend the
+  same evidence-diagram SVG system already used for Hero (`FIG. 01`) and
+  Journey (`FIG. 02`) to the Comparison section — a self-authored
+  "glossy render" panel and "annotated technical plan" panel pair, same
+  visual grammar, zero sourcing dependency, and it would also resolve a
+  second problem noted independently of licensing: the comparison images
+  are the only photographic/color content left on the page, and now read
+  as visually inconsistent with the rest of the (all self-authored,
+  thin-line, monochrome-plus-orange) system. Trust logos are lower risk
+  on their own terms (nominative use — naming who your users work for is
+  a different act than reproducing Propsoch's own designed content) and
+  could reasonably be left as a separate, smaller decision.
+
+Not implemented in this revision. Flagged for an explicit decision
+before submission.
+
+### 8.4 Resolution (2026-09-23, final)
+
+Checked directly: the actual assignment brief ("Frontend Engr Task.pdf")
+says only "Analyze the Propsoch landing page and build an improved
+version," with no statement, explicit or implicit, granting rights to
+reproduce site content. That's the only place "assessment-context
+authorization" could have come from, and it isn't there. Option A does
+not apply — this was verified, not assumed either way.
+
+**Both remaining propsoch.com-derived asset groups have been replaced**,
+per option B:
+
+- **Comparison images** (`comparison-brochure.webp` / `comparison-reality.webp`,
+  used in `BrochureRealityCompare.tsx`) — replaced with `BrochurePanel`
+  and `RealityPanel`, two self-authored inline SVGs sharing one footprint
+  layout (same site, two lenses: soft/rounded/unannotated vs
+  sharp/outlined/measured-and-flagged), captioned `FIG. 03` to match the
+  Hero/Journey system. Zero raster assets in this section now.
+- **Trust-bar logos** (`public/images/logos/*.webp`) — removed entirely;
+  `Marquee.tsx` now renders every company as a text wordmark (the
+  treatment already used for xto10x, extended to all nine). A company
+  name in plain text is a different act from reproducing a copied logo
+  image and was judged lower-risk on its own terms, but removed anyway
+  for a single consistent story: nothing in this repository is sourced
+  from propsoch.com as of this revision.
+
+Net effect: the entire page is now 100% self-authored SVG/CSS/typography.
+No raster image assets remain in `public/images/` at all.
