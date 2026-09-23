@@ -23,11 +23,21 @@ export const metadata: Metadata = {
   title: "Propsoch | Independent Research Before You Buy a Home",
   description:
     "Propsoch helps homebuyers investigate a property before trusting a broker's sales pitch — guided research, site visits and negotiation support across a 25-day journey.",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Propsoch | Independent Research Before You Buy a Home",
     description:
       "Guided home buying built on evidence, not sales pitches. See the reality behind the brochure.",
     type: "website",
+    url: "/",
+  },
+  twitter: {
+    card: "summary",
+    title: "Propsoch | Independent Research Before You Buy a Home",
+    description:
+      "Guided home buying built on evidence, not sales pitches. See the reality behind the brochure.",
   },
 };
 
