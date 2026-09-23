@@ -1174,8 +1174,10 @@ implementing the approved subset.
 
 ## 20.6 Deployed site
 
-_Deployed URL: TBD — see repository for local run instructions
-(`npm install && npm run dev`)._
+Deployed: [propsoch-chi.vercel.app](https://propsoch-chi.vercel.app) —
+see §22.11 for the final deployment verification. (This section
+predates deployment; left as historical record of project state at
+the time it was written.)
 
 ## 20.7 Motion & interaction upgrade (post-launch, approved from §20.5's research)
 
@@ -1772,15 +1774,35 @@ methodologies, not directly comparable apples-to-apples.
 |---|---|---|---|---|---|---|
 | **Original baseline** | 43 | 57 | 5.9s | 1.7s | PageSpeed Insights, propsoch.com | 2026-09-22 |
 | **Local redesign (this phase)** | 98 | 100 | 2.4s | 0.6s | Lighthouse CLI, `next start`, local | 2026-09-23 |
-| **Deployed redesign** | — | — | — | — | Lighthouse CLI, live URL | see §22.11 |
+| **Deployed redesign** | 97 | 100 | 2.1s | 0.4s | Lighthouse CLI, live URL | 2026-09-23 |
 
 No overall "better/worse" verdict beyond these measured numbers — the
 methodology differs too much for that framing to mean anything
-precise. The deployed row is filled in §22.11 once real numbers exist,
-not estimated here.
+precise. Worth noting as a data point, not a judgment: the deployed
+Mobile Speed Index (4.0s) reads higher than the local run (1.1s) —
+expected real-network/edge-latency variance from measuring an actual
+deployed origin instead of a local loopback, not a regression, and
+Performance score itself (97) and LCP (2.1s, actually faster than
+local's 2.4s) don't show the same pattern.
 
 ## 22.11 Deployment
 
-_Filled in after deployment — see the end of this document for the
-final, verified entry with the live URL, deployed Lighthouse numbers,
-and breakpoint verification._
+**Live**: [propsoch-chi.vercel.app](https://propsoch-chi.vercel.app)
+(Vercel), deployed from commit `26b2fff` on 2026-09-23.
+
+Verified directly against the live URL, not assumed from the local
+build:
+
+- HTTP 200, correct `<title>` and `<h1>`, all seven sections present
+  (Hero/Trust/Comparison/Journey/Testimonial/FinalCta/Footer)
+- **Zero `<img>` tags on the deployed page** — confirms the licensing
+  resolution (§22.5) actually shipped, not just passed locally
+- 0 axe violations (full page, post-scroll), 0 console/page errors,
+  0 failed requests
+- 0px horizontal overflow at 390, 1440, and 1920 — screenshotted and
+  visually confirmed, including the Comparison section's contained
+  width at 1920 showing clear paper margin on both sides
+- Lighthouse: **Mobile 97/100/100/100, Desktop 100/100/100/100** — full
+  numbers in §22.10's table above
+
+No further deployment steps outstanding.
